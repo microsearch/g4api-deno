@@ -70,10 +70,6 @@ export interface CollectionContentsDocumentsResponse {
   documents: CollectionContentsDocument[];
 }
 
-export interface CollectionContentsRecord {
-  values: string[];
-}
-
 export interface CollectionContentsRequest {
   /** @format int32 */
   collectionId: number;
@@ -81,7 +77,13 @@ export interface CollectionContentsRequest {
 }
 
 export interface CollectionContentsResponse {
-  records: CollectionContentsRecord[];
+  root: CollectionNode;
+}
+
+export interface CollectionNode {
+  value: string;
+  key: string[];
+  children: CollectionNode[] | null;
 }
 
 export interface ContentsField {
@@ -137,9 +139,9 @@ export interface CreateRoleResponse {
 }
 
 export interface CreateSessionRequest {
-  /** @example user@microsearch.net */
+  /** @example "user@microsearch.net" */
   username: string;
-  /** @example password123 */
+  /** @example "password123" */
   password: string;
   data?: any;
   /** @format int32 */
@@ -518,6 +520,7 @@ export interface ProblemDetails {
   status?: number | null;
   detail?: string | null;
   instance?: string | null;
+  [key: string]: any;
 }
 
 export interface RefreshResponse {
@@ -632,9 +635,9 @@ export interface UpdateUserResponse {
 }
 
 export interface UserAuthenticationRequest {
-  /** @example user@microsearch.net */
+  /** @example "user@microsearch.net" */
   username: string;
-  /** @example password123 */
+  /** @example "password123" */
   password: string;
   detail?: Record<string, any>;
 }
@@ -660,32 +663,36 @@ export interface UserClaimAccountRequest {
   password?: string | null;
 }
 
-/**
- * @format int32
- */
-export type UserEventType =
-  | 0
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
-  | 1000
-  | 1001
-  | 1002
-  | 1003
-  | 1004
-  | 1005;
+/** @format int32 */
+export enum UserEventType {
+  Value0 = 0,
+  Value1 = 1,
+  Value2 = 2,
+  Value3 = 3,
+  Value4 = 4,
+  Value5 = 5,
+  Value1000 = 1000,
+  Value1001 = 1001,
+  Value1002 = 1002,
+  Value1003 = 1003,
+  Value1004 = 1004,
+  Value1005 = 1005,
+}
 
 export interface UserResetPasswordRequest {
   token: string;
   password?: string | null;
 }
 
-/**
- * @format int32
- */
-export type UserStatus = 0 | 1 | 2 | 3 | 4 | 5;
+/** @format int32 */
+export enum UserStatus {
+  Value0 = 0,
+  Value1 = 1,
+  Value2 = 2,
+  Value3 = 3,
+  Value4 = 4,
+  Value5 = 5,
+}
 
 export interface UserWithAppMetadata {
   /** @format int32 */
@@ -751,6 +758,7 @@ export enum ContentType {
   Json = "application/json",
   FormData = "multipart/form-data",
   UrlEncoded = "application/x-www-form-urlencoded",
+  Text = "text/plain",
 }
 
 export class HttpClient<SecurityDataType = unknown> {
@@ -817,6 +825,11 @@ export class HttpClient<SecurityDataType = unknown> {
       input !== null && (typeof input === "object" || typeof input === "string")
         ? JSON.stringify(input)
         : input,
+    [ContentType.Text]: (
+      input: any,
+    ) => (input !== null && typeof input !== "string"
+      ? JSON.stringify(input)
+      : input),
     [ContentType.FormData]: (input: any) =>
       Object.keys(input || {}).reduce((formData, key) => {
         const property = input[key];
@@ -1853,6 +1866,25 @@ export class Api<SecurityDataType extends unknown>
         path: `/session/${id}`,
         method: "DELETE",
         secure: true,
+        ...params,
+      }),
+  };
+  staticSession = {
+    /**
+     * No description
+     *
+     * @tags Sessions
+     * @name StaticSessionDetail
+     * @summary Get session without updating ttl (internal use)
+     * @request GET:/static-session/{id}
+     * @secure
+     */
+    staticSessionDetail: (id: string, params: RequestParams = {}) =>
+      this.request<GetSessionResponse, ProblemDetails>({
+        path: `/static-session/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
         ...params,
       }),
   };
