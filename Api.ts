@@ -1314,6 +1314,30 @@ export class Api<SecurityDataType extends unknown>
         ...params,
       }),
   };
+  htmlfile = {
+    /**
+     * No description
+     *
+     * @tags Documents
+     * @name HtmlfileDetail
+     * @summary Retrieve raw HTML file from repository
+     * @request GET:/htmlfile/{tenant}/{sessionId}/{signature}/{filename}
+     * @secure
+     */
+    htmlfileDetail: (
+      tenant: string,
+      sessionId: string,
+      signature: string,
+      filename: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/htmlfile/${tenant}/${sessionId}/${signature}/${filename}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+  };
   exportUsers = {
     /**
      * No description
