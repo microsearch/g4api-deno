@@ -38,13 +38,14 @@ export class G4ApiImpl {
         headers["Authorization"] = `apikey ${this.apikey}`;
       else if (this.authenticated)
         headers["Authorization"] = `bearer ${this.bearer}`;
-      return await mapG4Response(
-        await fetch(`${this.endpoint}${path}`, {
-          method,
-          headers,
-          body: request ? JSON.stringify(request) : undefined,
-        })
-      );
+      const response = await fetch(`${this.endpoint}${path}`, {
+        method,
+        headers,
+        body: request ? JSON.stringify(request) : undefined,
+      });
+      const bearer = response.headers.get("x-g4-bearer");
+      if (bearer != null) this.bearerToken = bearer;
+      return await mapG4Response(response);
     } catch (error: unknown) {
       return Err({
         source: "network",
