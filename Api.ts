@@ -80,6 +80,14 @@ export interface CollectionContentsResponse {
   root: CollectionNode;
 }
 
+export interface CollectionDocument {
+  signature: string;
+  title: string;
+  docMetadata: Record<string, string>;
+  /** @format date-time */
+  archived: string | null;
+}
+
 export interface CollectionNode {
   value: string;
   key: string[];
@@ -244,7 +252,7 @@ export interface G4DocumentLoadedMessage {
   /** @format int64 */
   docId: number;
   signature: string;
-  docType: string | null;
+  mimeType: string | null;
   filename: string | null;
   loaded: string | null;
   policies: string[];
@@ -308,6 +316,10 @@ export interface G4UserUpdateMessage {
 
 export interface GetAdminsResponse {
   admins?: AdminUser[] | null;
+}
+
+export interface GetCollectionResponse {
+  documents: CollectionDocument[];
 }
 
 export interface GetCollectionsResponse {
@@ -480,17 +492,14 @@ export interface ImportUsersResponse {
 
 export interface LoadDocumentRequest {
   signature: string;
-  docType: string;
   filename?: string | null;
-  policies: string[];
-  /** @format int32 */
-  parts?: number | null;
+  process?: ProcessingSettings;
 }
 
 export interface LoadDocumentResponse {
   /** @format int64 */
   id: number;
-  signedUploadUrls: string[];
+  signedUploadUrl: string;
   bearer: string;
 }
 
@@ -521,6 +530,11 @@ export interface ProblemDetails {
   detail?: string | null;
   instance?: string | null;
   [key: string]: any;
+}
+
+export interface ProcessingSettings {
+  html?: boolean;
+  pdf?: boolean;
 }
 
 export interface RefreshResponse {
@@ -1163,6 +1177,23 @@ export class Api<SecurityDataType extends unknown>
         format: "json",
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags Collections
+     * @name CollectionDetail
+     * @request GET:/collection/{id}
+     * @secure
+     */
+    collectionDetail: (id: number, params: RequestParams = {}) =>
+      this.request<GetCollectionResponse, ProblemDetails>({
+        path: `/collection/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
   };
   collectionContents = {
     /**
@@ -1333,6 +1364,29 @@ export class Api<SecurityDataType extends unknown>
     ) =>
       this.request<void, any>({
         path: `/htmlfile/${tenant}/${sessionId}/${signature}/${filename}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+  };
+  docfile = {
+    /**
+     * No description
+     *
+     * @tags Documents
+     * @name DocfileDetail
+     * @summary Retrieve original document file from repository
+     * @request GET:/docfile/{tenant}/{sessionId}/{signature}
+     * @secure
+     */
+    docfileDetail: (
+      tenant: string,
+      sessionId: string,
+      signature: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/docfile/${tenant}/${sessionId}/${signature}`,
         method: "GET",
         secure: true,
         ...params,
