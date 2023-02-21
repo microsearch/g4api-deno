@@ -499,7 +499,7 @@ export interface LoadDocumentRequest {
 export interface LoadDocumentResponse {
   /** @format int64 */
   id: number;
-  signedUploadUrl: string;
+  signedUploadUrl: string | null;
   bearer: string;
 }
 
