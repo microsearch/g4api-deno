@@ -199,6 +199,10 @@ export interface DocumentUpdate {
   attachments: Document[];
 }
 
+export interface ExportDocumentSignaturesResponse {
+  signatures: string[];
+}
+
 export interface ExportedUser {
   /** @format date-time */
   created: string;
@@ -1183,6 +1187,7 @@ export class Api<SecurityDataType extends unknown>
      *
      * @tags Collections
      * @name CollectionDetail
+     * @summary Get collection contents
      * @request GET:/collection/{id}
      * @secure
      */
@@ -1192,6 +1197,23 @@ export class Api<SecurityDataType extends unknown>
         method: "GET",
         secure: true,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Collections
+     * @name CollectionDelete
+     * @summary Archive document collection
+     * @request DELETE:/collection/{id}
+     * @secure
+     */
+    collectionDelete: (id: number, params: RequestParams = {}) =>
+      this.request<void, ProblemDetails>({
+        path: `/collection/${id}`,
+        method: "DELETE",
+        secure: true,
         ...params,
       }),
   };
@@ -1428,6 +1450,25 @@ export class Api<SecurityDataType extends unknown>
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  exportDocumentSignatures = {
+    /**
+     * No description
+     *
+     * @tags ImportExport
+     * @name ExportDocumentSignaturesCreate
+     * @summary Export document signature list
+     * @request POST:/export-document-signatures
+     * @secure
+     */
+    exportDocumentSignaturesCreate: (params: RequestParams = {}) =>
+      this.request<ExportDocumentSignaturesResponse, ProblemDetails>({
+        path: `/export-document-signatures`,
+        method: "POST",
+        secure: true,
         format: "json",
         ...params,
       }),
