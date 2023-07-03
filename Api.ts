@@ -83,6 +83,7 @@ export interface CollectionContentsResponse {
 export interface CollectionDocument {
   signature: string;
   title: string;
+  mimeType: string;
   docMetadata: Record<string, string>;
   /** @format date-time */
   archived: string | null;
@@ -323,6 +324,9 @@ export interface GetAdminsResponse {
 }
 
 export interface GetCollectionResponse {
+  bucketName: string;
+  /** @format uuid */
+  tenantRepoId: string;
   documents: CollectionDocument[];
 }
 
