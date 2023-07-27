@@ -36,7 +36,9 @@ export class G4ApiImpl {
       if (request) headers["Content-Type"] = "application/json";
       if (this.apikey !== null)
         headers["Authorization"] = `apikey ${this.apikey}`;
-      else if (this.authenticated)
+      else if (this.session !== null)
+        headers["Authorization"] = `session ${this.session}`;
+      else if (this.bearer !== null)
         headers["Authorization"] = `bearer ${this.bearer}`;
       const response = await fetch(`${this.endpoint}${path}`, {
         method,
@@ -54,16 +56,24 @@ export class G4ApiImpl {
     }
   }
 
+  set sessionId(sessionId: string | null) {
+    this.session = sessionId;
+  }
+
+  get sessionId(): string | null {
+    return this.session;
+  }
+
   set bearerToken(bearer: string | null) {
     this.bearer = bearer;
   }
 
-  set apiKey(apikey: string | null) {
-    this.apikey = apikey;
+  get bearerToken(): string | null {
+    return this.bearer;
   }
 
-  get authenticated(): boolean {
-    return this.bearer !== null;
+  set apiKey(apikey: string | null) {
+    this.apikey = apikey;
   }
 
   private endpoint: string;
@@ -71,6 +81,7 @@ export class G4ApiImpl {
   private appName?: string;
   private bearer: string | null = null;
   private apikey: string | null = null;
+  private session: string | null = null;
 }
 
 async function mapG4Response<RespT>(

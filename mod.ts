@@ -6,6 +6,33 @@ export class G4Api extends G4ApiImpl {
   constructor(endpoint: string, tenant: string, appName?: string) {
     super(endpoint, tenant, appName);
   }
+
+  /*
+    convenience functions
+  */
+
+  async connect(request: api.CreateSessionRequest) {
+    if (this.sessionId !== null) await this.disconnect();
+    const response = await this.createSession(request);
+    response.match({
+      ok: (auth) => {
+        this.sessionId = auth.sessionId;
+      },
+      err: (_err) => {},
+    });
+    return response;
+  }
+
+  async disconnect() {
+    if (this.sessionId !== null) {
+      return await this.closeSession(this.sessionId);
+    }
+  }
+
+  get connected(): boolean {
+    return this.sessionId !== null;
+  }
+
   /*
     admins API
   */
