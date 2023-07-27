@@ -3,8 +3,9 @@ import { Ok, Err } from "monads";
 import { G4ResultPromise } from "./types.ts";
 
 export class G4ApiImpl {
-  protected constructor(endpoint: string, tenant: string, appName?: string) {
-    this.endpoint = endpoint;
+  protected constructor(stage: string, tenant: string, appName?: string) {
+    this.endpoint = `https://g4-${stage}.v1.mrcapi.net`;
+    this.search_endpoint = `https://g4-search-${stage}.v1.mrcapi.net`;
     this.tenant = tenant;
     this.appName = appName;
   }
@@ -56,6 +57,34 @@ export class G4ApiImpl {
     }
   }
 
+  protected async search_post<ReqT, RespT>(
+    path: string,
+    request: ReqT
+  ): G4ResultPromise<RespT> {
+    try {
+      const headers: Record<string, string> = {
+        "x-g4-tenant": this.tenant,
+        "Content-type": "application/json",
+      };
+      if (this.appName) headers["x-g4-application"] = this.appName;
+      if (this.bearer !== null)
+        headers["Authorization"] = `Bearer ${this.bearer}`;
+      const response = await fetch(`${this.search_endpoint}${path}`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(request),
+      });
+      const bearer = response.headers.get("x-g4-bearer");
+      if (bearer != null) this.bearerToken = bearer;
+      return await mapG4Response(response);
+    } catch (error: unknown) {
+      return Err({
+        source: "network",
+        message: error instanceof Error ? error.message : "unknown error",
+      });
+    }
+  }
+
   set sessionId(sessionId: string | null) {
     this.session = sessionId;
   }
@@ -76,13 +105,44 @@ export class G4ApiImpl {
     this.apikey = apikey;
   }
 
+  async search(
+    collection: string,
+    request: SearchRequest
+  ): G4ResultPromise<SearchResponse> {
+    return await this.search_post<SearchRequest, SearchResponse>(
+      `/search/${this.tenant}/${collection}`,
+      request
+    );
+  }
+
   private endpoint: string;
+  private search_endpoint: string;
   private tenant: string;
   private appName?: string;
   private bearer: string | null = null;
   private apikey: string | null = null;
   private session: string | null = null;
 }
+
+export type SearchRequest = {
+  query: string;
+  start: number;
+  count: number;
+  max_chars?: number;
+};
+
+export type SearchResponse = {
+  total_results: number;
+  results: SearchResult[];
+};
+
+export type SearchResult = {
+  index: number;
+  score: number;
+  signature: string;
+  title: string;
+  snippet: string;
+};
 
 async function mapG4Response<RespT>(
   response: Response
@@ -104,6 +164,7 @@ async function mapG4Response<RespT>(
         ...(g4error === null
           ? {
               source: "http",
+              details: { text: await response.text() },
             }
           : {
               source: "g4",
