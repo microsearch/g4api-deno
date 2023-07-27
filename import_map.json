@@ -1,6 +1,0 @@
-{
-  "imports": {
-    "asserts": "https://deno.land/std@0.159.0/testing/asserts.ts",
-    "monads": "https://deno.land/x/monads@v0.5.10/mod.ts"
-  }
-}

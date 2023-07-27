@@ -1,3 +1,6 @@
 {
-  "importMap": "./import_map.json"
+  "imports": {
+    "asserts": "https://deno.land/std@0.196.0/testing/asserts.ts",
+    "monads": "https://deno.land/x/monads@v0.5.10/mod.ts"
+  }
 }
