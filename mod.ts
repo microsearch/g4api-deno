@@ -2,6 +2,9 @@ import * as api from "./Api.ts";
 import { G4ApiImpl } from "./impl.ts";
 import { AppMetadata, G4ResultPromise } from "./types.ts";
 
+export * from "./Api.ts";
+export * from "./types.ts";
+
 export class G4Api extends G4ApiImpl {
   constructor(endpoint: string, tenant: string, appName?: string) {
     super(endpoint, tenant, appName);

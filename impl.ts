@@ -1,6 +1,7 @@
 import { Ok, Err } from "monads";
 
 import { G4ResultPromise } from "./types.ts";
+import { SearchRequest, SearchResponse } from "./mod.ts";
 
 export class G4ApiImpl {
   protected constructor(stage: string, tenant: string, appName?: string) {
@@ -123,26 +124,6 @@ export class G4ApiImpl {
   private apikey: string | null = null;
   private session: string | null = null;
 }
-
-export type SearchRequest = {
-  query: string;
-  start: number;
-  count: number;
-  max_chars?: number;
-};
-
-export type SearchResponse = {
-  total_results: number;
-  results: SearchResult[];
-};
-
-export type SearchResult = {
-  index: number;
-  score: number;
-  signature: string;
-  title: string;
-  snippet: string;
-};
 
 async function mapG4Response<RespT>(
   response: Response
