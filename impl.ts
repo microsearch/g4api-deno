@@ -39,7 +39,7 @@ export class G4ApiImpl {
       if (this.apikey !== null)
         headers["Authorization"] = `apikey ${this.apikey}`;
       else if (this.session !== null)
-        headers["Authorization"] = `session ${this.session}`;
+        headers["Authorization"] = `bearer ${this.session}`;
       else if (this.bearer !== null)
         headers["Authorization"] = `bearer ${this.bearer}`;
       const response = await fetch(`${this.endpoint}${path}`, {
