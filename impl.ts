@@ -68,8 +68,8 @@ export class G4ApiImpl {
         "Content-type": "application/json",
       };
       if (this.appName) headers["x-g4-application"] = this.appName;
-      if (this.bearer !== null)
-        headers["Authorization"] = `Bearer ${this.bearer}`;
+      if (this.sessionId !== null || this.bearer !== null)
+        headers["Authorization"] = `Bearer ${this.sessionId ?? this.bearer}`;
       const response = await fetch(`${this.search_endpoint}${path}`, {
         method: "POST",
         headers,
