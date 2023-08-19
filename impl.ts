@@ -106,12 +106,9 @@ export class G4ApiImpl {
     this.apikey = apikey;
   }
 
-  async search(
-    collection: string,
-    request: SearchRequest
-  ): G4ResultPromise<SearchResponse> {
+  async search(request: SearchRequest): G4ResultPromise<SearchResponse> {
     return await this.search_post<SearchRequest, SearchResponse>(
-      `/search/${this.tenant}/${collection}`,
+      `/search/${this.tenant}`,
       request
     );
   }
