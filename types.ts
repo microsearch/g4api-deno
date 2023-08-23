@@ -19,6 +19,7 @@ export type SearchRequest = {
 };
 
 export type SearchResponse = {
+  error: string | null;
   total_results: number;
   results: {
     index: number;
