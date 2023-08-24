@@ -18,14 +18,17 @@ export type SearchRequest = {
   max_chars?: number;
 };
 
+export type SearchResponseResult = {
+  index: number;
+  score: number;
+  signature: string;
+  title: string;
+  collection: string;
+  snippet: string;
+};
+
 export type SearchResponse = {
   error: string | null;
   total_results: number;
-  results: {
-    index: number;
-    score: number;
-    signature: string;
-    title: string;
-    snippet: string;
-  }[];
+  results: SearchResponseResult[];
 };
