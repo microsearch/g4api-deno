@@ -1371,6 +1371,23 @@ export class Api<SecurityDataType extends unknown>
         secure: true,
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags Documents
+     * @name DocumentDetail
+     * @summary Retrieve original document from repository
+     * @request GET:/document/{signature}
+     * @secure
+     */
+    documentDetail: (signature: string, params: RequestParams = {}) =>
+      this.request<void, ProblemDetails>({
+        path: `/document/${signature}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
   };
   htmlfile = {
     /**
@@ -1378,7 +1395,7 @@ export class Api<SecurityDataType extends unknown>
      *
      * @tags Documents
      * @name HtmlfileDetail
-     * @summary Retrieve raw HTML file from repository
+     * @summary Retrieve raw HTML file from repository (For use in HTML attributes only)
      * @request GET:/htmlfile/{tenant}/{sessionId}/{signature}/{filename}
      * @secure
      */
@@ -1402,7 +1419,7 @@ export class Api<SecurityDataType extends unknown>
      *
      * @tags Documents
      * @name DocfileDetail
-     * @summary Retrieve original document file from repository
+     * @summary Retrieve original document file from repository (For use in HTML attributes only)
      * @request GET:/docfile/{tenant}/{sessionId}/{signature}
      * @secure
      */
