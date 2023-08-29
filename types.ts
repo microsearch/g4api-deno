@@ -12,6 +12,7 @@ export type G4ResultPromise<T> = Promise<Result<T, G4ApiError>>;
 export type AppMetadata = Record<string, unknown>;
 
 export type SearchRequest = {
+  collections: string[];
   query: string;
   start: number;
   count: number;
