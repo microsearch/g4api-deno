@@ -34,12 +34,29 @@ Deno.test("dump search results", async () => {
   await g4api.connect(credentials);
   if (g4api.connected) {
     (
-      await g4api.search("contracts", {
+      await g4api.search({
+        collections: ["contracts"],
         count: 10,
         start: 0,
         query: '"severance pay"',
       })
     ).match({
+      ok: (response) => {
+        console.log({ response });
+      },
+      err: (err) => {
+        console.log({ err, details: err.details });
+      },
+    });
+    await g4api.disconnect();
+  }
+});
+
+Deno.test("dump index schema", async () => {
+  const g4api = new G4Api("dev", tenant, appName);
+  await g4api.connect(credentials);
+  if (g4api.connected) {
+    (await g4api.indexSchema(tenant)).match({
       ok: (response) => {
         console.log({ response });
       },

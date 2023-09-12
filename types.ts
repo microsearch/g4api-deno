@@ -33,3 +33,13 @@ export type SearchResponseResult = {
   collection: string;
   snippet: string;
 };
+
+export type FieldIndexSchema = {
+  fieldname: string;
+  index_type: string;
+};
+
+export type IndexSchemaResponse = {
+  error: string | null;
+  indexes: FieldIndexSchema[];
+};

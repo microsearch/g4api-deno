@@ -1,7 +1,11 @@
 import { Ok, Err } from "monads";
 
-import { G4ResultPromise } from "./types.ts";
-import { SearchRequest, SearchResponse } from "./mod.ts";
+import {
+  G4ResultPromise,
+  IndexSchemaResponse,
+  SearchRequest,
+  SearchResponse,
+} from "./types.ts";
 
 export class G4ApiImpl {
   protected constructor(stage: string, tenant: string, appName?: string) {
@@ -58,7 +62,7 @@ export class G4ApiImpl {
     }
   }
 
-  protected async search_post<ReqT, RespT>(
+  protected async searchPost<ReqT, RespT>(
     path: string,
     request: ReqT
   ): G4ResultPromise<RespT> {
@@ -107,10 +111,34 @@ export class G4ApiImpl {
   }
 
   async search(request: SearchRequest): G4ResultPromise<SearchResponse> {
-    return await this.search_post<SearchRequest, SearchResponse>(
+    return await this.searchPost<SearchRequest, SearchResponse>(
       `/search/${this.tenant}`,
       request
     );
+  }
+
+  async indexSchema(tenant: string): G4ResultPromise<IndexSchemaResponse> {
+    try {
+      const headers: Record<string, string> = {
+        "x-g4-tenant": this.tenant,
+        "Content-type": "application/json",
+      };
+      if (this.appName) headers["x-g4-application"] = this.appName;
+      if (this.sessionId !== null || this.bearer !== null)
+        headers["Authorization"] = `Bearer ${this.sessionId ?? this.bearer}`;
+      const response = await fetch(`${this.search_endpoint}/schema/${tenant}`, {
+        method: "POST",
+        headers,
+      });
+      const bearer = response.headers.get("x-g4-bearer");
+      if (bearer != null) this.bearerToken = bearer;
+      return await mapG4Response(response);
+    } catch (error: unknown) {
+      return Err({
+        source: "network",
+        message: error instanceof Error ? error.message : "unknown error",
+      });
+    }
   }
 
   private endpoint: string;
