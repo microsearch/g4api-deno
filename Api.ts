@@ -49,14 +49,13 @@ export interface Collection {
   created: string;
   /** @format date-time */
   updated: string | null;
-  /** @format date-time */
-  indexed: string | null;
 }
 
 export interface CollectionContentsDocument {
   title: string;
   signature: string;
   docMetadata: Record<string, string>;
+  archived: boolean;
 }
 
 export interface CollectionContentsDocumentsRequest {
@@ -114,16 +113,6 @@ export interface CreateAdminRequest {
 export interface CreateAdminResponse {
   /** @format int32 */
   id?: number;
-}
-
-export interface CreateCollectionRequest {
-  name: string;
-  schema: Record<string, FieldDescriptor>;
-}
-
-export interface CreateCollectionResponse {
-  /** @format int32 */
-  id: number;
 }
 
 export interface CreateProfileRequest {
@@ -188,20 +177,14 @@ export interface CreateUserResponse {
   id: number;
 }
 
-export interface Document {
+export interface DeleteUnverifiedDocumentsResponse {
+  /** @format int32 */
+  count: number;
+}
+
+export interface DocumentSpec {
   signature: string;
   filename: string;
-}
-
-export interface DocumentUpdate {
-  doc: Document;
-  title: string;
-  docMetadata: Record<string, string>;
-  attachments: Document[];
-}
-
-export interface ExportDocumentSignaturesResponse {
-  signatures: string[];
 }
 
 export interface ExportedUser {
@@ -460,6 +443,30 @@ export interface GetUsersWithAppMetadataResponse {
   users: UserWithAppMetadata[];
 }
 
+export interface ImportCollectionRequest {
+  mode: string;
+  name: string;
+  schema: Record<string, FieldDescriptor>;
+  documents: ImportDocument[];
+}
+
+export interface ImportCollectionResponse {
+  /** @format int32 */
+  id: number;
+  /** @format int32 */
+  imported: number;
+  errors: string[];
+}
+
+export interface ImportDocument {
+  document: DocumentSpec;
+  title: string;
+  docMetadata: Record<string, string>;
+  attachments: DocumentSpec[];
+  /** @format date-time */
+  archived?: string | null;
+}
+
 export interface ImportUserRequest {
   status: UserStatus;
   username: string;
@@ -508,7 +515,10 @@ export interface LoadDocumentResponse {
   /** @format int64 */
   id: number;
   signedUploadUrl: string | null;
-  bearer: string;
+}
+
+export interface LoadedDocumentsResponse {
+  signatures: string[];
 }
 
 export interface PasswordChangeRequest {
@@ -583,17 +593,8 @@ export interface SecurityToken {
   token: string;
 }
 
-export interface UpdateCollectionRequest {
-  /** @format int32 */
-  collectionId: number;
-  update: DocumentUpdate[];
-  archive: string[];
-}
-
-export interface UpdateCollectionResponse {
-  /** @format int32 */
-  collectionId: number;
-  status: UpdateStatus[];
+export interface UnprocessedDocumentsResponse {
+  signatures: string[];
 }
 
 export interface UpdateProfileRequest {
@@ -612,13 +613,6 @@ export interface UpdateRoleRequest {
   defaultScope?: string | null;
   newName?: string | null;
   claims?: string[] | null;
-}
-
-export interface UpdateStatus {
-  signature: string;
-  filename: string | null;
-  failed: boolean;
-  message: string;
 }
 
 export interface UpdateUserRequest {
@@ -1150,10 +1144,10 @@ export class Api<SecurityDataType extends unknown>
      * @secure
      */
     collectionsCreate: (
-      data: CreateCollectionRequest,
+      data: ImportCollectionRequest,
       params: RequestParams = {},
     ) =>
-      this.request<CreateCollectionResponse, ProblemDetails>({
+      this.request<ImportCollectionResponse, ProblemDetails>({
         path: `/collections`,
         method: "POST",
         body: data,
@@ -1164,29 +1158,6 @@ export class Api<SecurityDataType extends unknown>
       }),
   };
   collection = {
-    /**
-     * No description
-     *
-     * @tags Collections
-     * @name CollectionCreate
-     * @summary Add/Update documents in a collection
-     * @request POST:/collection
-     * @secure
-     */
-    collectionCreate: (
-      data: UpdateCollectionRequest,
-      params: RequestParams = {},
-    ) =>
-      this.request<UpdateCollectionResponse, ProblemDetails>({
-        path: `/collection`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
     /**
      * No description
      *
@@ -1436,6 +1407,81 @@ export class Api<SecurityDataType extends unknown>
         ...params,
       }),
   };
+  documentProcessed = {
+    /**
+     * No description
+     *
+     * @tags Documents
+     * @name DocumentProcessedCreate
+     * @summary Mark a document as processed
+     * @request POST:/document-processed/{signature}
+     * @secure
+     */
+    documentProcessedCreate: (signature: string, params: RequestParams = {}) =>
+      this.request<void, ProblemDetails>({
+        path: `/document-processed/${signature}`,
+        method: "POST",
+        secure: true,
+        ...params,
+      }),
+  };
+  loadedDocuments = {
+    /**
+     * No description
+     *
+     * @tags Documents
+     * @name LoadedDocumentsList
+     * @summary Get list of loaded documents
+     * @request GET:/loaded-documents
+     * @secure
+     */
+    loadedDocumentsList: (params: RequestParams = {}) =>
+      this.request<LoadedDocumentsResponse, ProblemDetails>({
+        path: `/loaded-documents`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  unprocessedDocuments = {
+    /**
+     * No description
+     *
+     * @tags Documents
+     * @name UnprocessedDocumentsList
+     * @summary Get list of unprocessed documents
+     * @request GET:/unprocessed-documents
+     * @secure
+     */
+    unprocessedDocumentsList: (params: RequestParams = {}) =>
+      this.request<UnprocessedDocumentsResponse, ProblemDetails>({
+        path: `/unprocessed-documents`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  unverifiedDocuments = {
+    /**
+     * No description
+     *
+     * @tags Documents
+     * @name UnverifiedDocumentsDelete
+     * @summary Delete unverified documents
+     * @request DELETE:/unverified-documents
+     * @secure
+     */
+    unverifiedDocumentsDelete: (params: RequestParams = {}) =>
+      this.request<DeleteUnverifiedDocumentsResponse, ProblemDetails>({
+        path: `/unverified-documents`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
   exportUsers = {
     /**
      * No description
@@ -1472,25 +1518,6 @@ export class Api<SecurityDataType extends unknown>
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-  };
-  exportDocumentSignatures = {
-    /**
-     * No description
-     *
-     * @tags ImportExport
-     * @name ExportDocumentSignaturesCreate
-     * @summary Export document signature list
-     * @request POST:/export-document-signatures
-     * @secure
-     */
-    exportDocumentSignaturesCreate: (params: RequestParams = {}) =>
-      this.request<ExportDocumentSignaturesResponse, ProblemDetails>({
-        path: `/export-document-signatures`,
-        method: "POST",
-        secure: true,
         format: "json",
         ...params,
       }),
@@ -1607,6 +1634,24 @@ export class Api<SecurityDataType extends unknown>
         method: "GET",
         secure: true,
         format: "json",
+        ...params,
+      }),
+  };
+  notify = {
+    /**
+     * No description
+     *
+     * @tags Notifications
+     * @name NotifyCreate
+     * @summary Handle SNS subscription messages
+     * @request POST:/notify
+     * @secure
+     */
+    notifyCreate: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/notify`,
+        method: "POST",
+        secure: true,
         ...params,
       }),
   };
