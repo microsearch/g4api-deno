@@ -32,6 +32,7 @@ export type SearchResponseResult = {
   title: string;
   collection: string;
   snippet: string;
+  archived: boolean;
 };
 
 export type FieldIndexSchema = {
