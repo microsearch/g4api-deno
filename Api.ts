@@ -24,6 +24,11 @@ export interface AdminUser {
   roleNames: string[];
 }
 
+export interface Attachment {
+  filename: string;
+  signature: string;
+}
+
 export interface AuthenticatedSessionResponse {
   validCredentials: boolean;
   accessAllowed: boolean;
@@ -84,6 +89,16 @@ export interface CollectionDocument {
   title: string;
   mimeType: string;
   docMetadata: Record<string, string>;
+  attachments: Attachment[];
+  /** @format date-time */
+  archived: string | null;
+}
+
+export interface CollectionDocumentUpdate {
+  signature: string;
+  title: string;
+  docMetadata: Record<string, string>;
+  attachments: Attachment[];
   /** @format date-time */
   archived: string | null;
 }
@@ -113,6 +128,16 @@ export interface CreateAdminRequest {
 export interface CreateAdminResponse {
   /** @format int32 */
   id?: number;
+}
+
+export interface CreateCollectionRequest {
+  name: string;
+  schema: Record<string, FieldDescriptor>;
+}
+
+export interface CreateCollectionResponse {
+  /** @format int32 */
+  id: number;
 }
 
 export interface CreateProfileRequest {
@@ -180,11 +205,6 @@ export interface CreateUserResponse {
 export interface DeleteUnverifiedDocumentsResponse {
   /** @format int32 */
   count: number;
-}
-
-export interface DocumentSpec {
-  signature: string;
-  filename: string;
 }
 
 export interface ExportedUser {
@@ -443,30 +463,6 @@ export interface GetUsersWithAppMetadataResponse {
   users: UserWithAppMetadata[];
 }
 
-export interface ImportCollectionRequest {
-  mode: string;
-  name: string;
-  schema: Record<string, FieldDescriptor>;
-  documents: ImportDocument[];
-}
-
-export interface ImportCollectionResponse {
-  /** @format int32 */
-  id: number;
-  /** @format int32 */
-  imported: number;
-  errors: string[];
-}
-
-export interface ImportDocument {
-  document: DocumentSpec;
-  title: string;
-  docMetadata: Record<string, string>;
-  attachments: DocumentSpec[];
-  /** @format date-time */
-  archived?: string | null;
-}
-
 export interface ImportUserRequest {
   status: UserStatus;
   username: string;
@@ -597,6 +593,17 @@ export interface UnprocessedDocumentsResponse {
   signatures: string[];
 }
 
+export interface UpdateCollectionRequest {
+  updates: CollectionDocumentUpdate[];
+  deletes: string[];
+}
+
+export interface UpdateCollectionResponse {
+  /** @format int32 */
+  id: number;
+  results: UpdateResult[];
+}
+
 export interface UpdateProfileRequest {
   name?: string | null;
   collections?: number[] | null;
@@ -607,6 +614,12 @@ export interface UpdateProfileResponse {
   id: number;
   name: string;
   collections: number[];
+}
+
+export interface UpdateResult {
+  signature: string;
+  result: string;
+  detail: string | null;
 }
 
 export interface UpdateRoleRequest {
@@ -1144,10 +1157,10 @@ export class Api<SecurityDataType extends unknown>
      * @secure
      */
     collectionsCreate: (
-      data: ImportCollectionRequest,
+      data: CreateCollectionRequest,
       params: RequestParams = {},
     ) =>
-      this.request<ImportCollectionResponse, ProblemDetails>({
+      this.request<CreateCollectionResponse, ProblemDetails>({
         path: `/collections`,
         method: "POST",
         body: data,
@@ -1172,6 +1185,30 @@ export class Api<SecurityDataType extends unknown>
         path: `/collection/${id}`,
         method: "GET",
         secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Collections
+     * @name CollectionCreate
+     * @summary Update collection contents
+     * @request POST:/collection/{id}
+     * @secure
+     */
+    collectionCreate: (
+      id: number,
+      data: UpdateCollectionRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<UpdateCollectionResponse, ProblemDetails>({
+        path: `/collection/${id}`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
