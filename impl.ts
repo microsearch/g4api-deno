@@ -2,7 +2,7 @@ import { Ok, Err } from "monads";
 
 import {
   G4ResultPromise,
-  IndexSchemaResponse,
+  ManifestResponse,
   SearchRequest,
   SearchResponse,
 } from "./types.ts";
@@ -117,7 +117,7 @@ export class G4ApiImpl {
     );
   }
 
-  async indexSchema(tenant: string): G4ResultPromise<IndexSchemaResponse> {
+  async manifest(tenant: string): G4ResultPromise<ManifestResponse> {
     try {
       const headers: Record<string, string> = {
         "x-g4-tenant": this.tenant,
@@ -126,10 +126,13 @@ export class G4ApiImpl {
       if (this.appName) headers["x-g4-application"] = this.appName;
       if (this.sessionId !== null || this.bearer !== null)
         headers["Authorization"] = `Bearer ${this.sessionId ?? this.bearer}`;
-      const response = await fetch(`${this.search_endpoint}/schema/${tenant}`, {
-        method: "POST",
-        headers,
-      });
+      const response = await fetch(
+        `${this.search_endpoint}/manifest/${tenant}`,
+        {
+          method: "POST",
+          headers,
+        }
+      );
       const bearer = response.headers.get("x-g4-bearer");
       if (bearer != null) this.bearerToken = bearer;
       return await mapG4Response(response);

@@ -35,12 +35,28 @@ export type SearchResponseResult = {
   archived: boolean;
 };
 
+export type ManifestResponse = {
+  error: string | null;
+  manifest: G4Manifest | null;
+};
+
+export type G4Manifest = {
+  tag: string;
+  version: string;
+  tenant: string;
+  tenantRepoId: string;
+  indexes: FieldIndexSchema[];
+  collections: CollectionManifest[];
+};
+
 export type FieldIndexSchema = {
   fieldname: string;
   index_type: string;
 };
 
-export type IndexSchemaResponse = {
-  error: string | null;
-  indexes: FieldIndexSchema[];
+export type CollectionManifest = {
+  name: string;
+  field: string[];
+  active: number;
+  archived: number;
 };
