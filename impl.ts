@@ -117,7 +117,7 @@ export class G4ApiImpl {
     );
   }
 
-  async manifest(tenant: string): G4ResultPromise<ManifestResponse> {
+  async manifest(): G4ResultPromise<ManifestResponse> {
     try {
       const headers: Record<string, string> = {
         "x-g4-tenant": this.tenant,
@@ -127,7 +127,7 @@ export class G4ApiImpl {
       if (this.sessionId !== null || this.bearer !== null)
         headers["Authorization"] = `Bearer ${this.sessionId ?? this.bearer}`;
       const response = await fetch(
-        `${this.search_endpoint}/manifest/${tenant}`,
+        `${this.search_endpoint}/manifest/${this.tenant}`,
         {
           method: "POST",
           headers,
