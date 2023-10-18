@@ -56,7 +56,7 @@ export type FieldIndexSchema = {
 
 export type CollectionManifest = {
   name: string;
-  field: string[];
+  fields: string[];
   active: number;
   archived: number;
 };
