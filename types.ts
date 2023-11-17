@@ -19,11 +19,21 @@ export type SearchRequest = {
   max_chars?: number;
 };
 
-export type SearchResponse = {
-  error: string | null;
-  totalResults: number;
+export const SUCCESS = "success";
+export const ERROR = "error";
+
+export type SearchSuccess = {
+  type: typeof SUCCESS;
+  total_results: number;
   results: SearchResponseResult[];
 };
+
+export type SearchError = {
+  type: typeof ERROR;
+  message: string;
+};
+
+export type SearchResponse = SearchSuccess | SearchError;
 
 export type SearchResponseResult = {
   index: number;
