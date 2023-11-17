@@ -22,8 +22,9 @@ export type SearchRequest = {
 export const SUCCESS = "success";
 export const ERROR = "error";
 
-export type SearchSuccess = {
+export type SearchResult = {
   type: typeof SUCCESS;
+  query: string;
   total_results: number;
   results: SearchResponseResult[];
 };
@@ -33,7 +34,7 @@ export type SearchError = {
   message: string;
 };
 
-export type SearchResponse = SearchSuccess | SearchError;
+export type SearchResponse = SearchResult | SearchError;
 
 export type SearchResponseResult = {
   index: number;
