@@ -100,7 +100,7 @@ export interface CollectionDocumentUpdate {
   docMetadata: Record<string, string>;
   attachments: Attachment[];
   /** @format date-time */
-  archived: string | null;
+  archived?: string | null;
 }
 
 export interface CollectionNode {
@@ -1444,24 +1444,6 @@ export class Api<SecurityDataType extends unknown>
         ...params,
       }),
   };
-  documentProcessed = {
-    /**
-     * No description
-     *
-     * @tags Documents
-     * @name DocumentProcessedCreate
-     * @summary Mark a document as processed
-     * @request POST:/document-processed/{signature}
-     * @secure
-     */
-    documentProcessedCreate: (signature: string, params: RequestParams = {}) =>
-      this.request<void, ProblemDetails>({
-        path: `/document-processed/${signature}`,
-        method: "POST",
-        secure: true,
-        ...params,
-      }),
-  };
   loadedDocuments = {
     /**
      * No description
@@ -1472,10 +1454,17 @@ export class Api<SecurityDataType extends unknown>
      * @request GET:/loaded-documents
      * @secure
      */
-    loadedDocumentsList: (params: RequestParams = {}) =>
+    loadedDocumentsList: (
+      query?: {
+        /** Document MIME type filter */
+        mimeType?: string;
+      },
+      params: RequestParams = {},
+    ) =>
       this.request<LoadedDocumentsResponse, ProblemDetails>({
         path: `/loaded-documents`,
         method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,
