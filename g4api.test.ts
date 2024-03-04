@@ -1,4 +1,6 @@
+import { UserStatus } from "./Api.ts";
 import { G4Api } from "./mod.ts";
+import { assert } from "assert";
 
 const appName = "deno-test";
 const tenant = "afscme";
@@ -52,18 +54,69 @@ Deno.test("dump search results", async () => {
   }
 });
 
-Deno.test("dump index schema", async () => {
+// Deno.test("dump index schema", async () => {
+//   const g4api = new G4Api("dev", tenant, appName);
+//   await g4api.connect(credentials);
+//   if (g4api.connected) {
+//     (await g4api.indexSchema(tenant)).match({
+//       ok: (response) => {
+//         console.log({ response });
+//       },
+//       err: (err) => {
+//         console.log({ err, details: err.details });
+//       },
+//     });
+//     await g4api.disconnect();
+//   }
+// });
+
+Deno.test("change password", async () => {
   const g4api = new G4Api("dev", tenant, appName);
   await g4api.connect(credentials);
-  if (g4api.connected) {
-    (await g4api.indexSchema(tenant)).match({
-      ok: (response) => {
-        console.log({ response });
-      },
-      err: (err) => {
-        console.log({ err, details: err.details });
-      },
-    });
-    await g4api.disconnect();
-  }
+  assert(g4api.connected);
+
+  const user_id = (await g4api.createUser({
+    status: 1,
+    username: "afakename",
+    password: "Not a real User!",
+    email: "alias@fakename.org",
+    fullname: "Alias Fakename",
+    roles: [],
+    profiles: [],
+    collections: [],
+    denyCollections: [],
+    customFields: {},
+    appName: "deno-test",
+    appMetadata: {},
+  })).match({
+    ok: (response) => {
+      assert(response.id > 0);
+      return response.id;
+    },
+    err: (error) => {
+      assert(false);
+      return 0;
+    },
+  });
+  assert(user_id > 0);
+
+  (await g4api.changePassword({
+    username: "afakename",
+    password: "Not a real User!",
+    newPassword: "A real password!!!",
+  })).match({
+    ok: () => {},
+    err: (error) => {
+      assert(false);
+      console.error(error);
+    },
+  });
+
+  (await g4api.archiveUser(user_id)).match({
+    ok: () => {},
+    err: (error) => {
+      assert(false);
+      console.error(error);
+    },
+  });
 });

@@ -1,4 +1,4 @@
-import { Ok, Err } from "monads";
+import { Err, Ok } from "monads";
 
 import {
   G4ResultPromise,
@@ -20,12 +20,12 @@ export class G4ApiImpl {
 
   protected put = async <ReqT, RespT>(
     path: string,
-    request: ReqT
+    request: ReqT,
   ): G4ResultPromise<RespT> => await this.http("PUT", path, request);
 
   protected post = async <ReqT, RespT>(
     path: string,
-    request?: ReqT
+    request?: ReqT,
   ): G4ResultPromise<RespT> => await this.http("POST", path, request);
 
   protected delete = async (path: string): G4ResultPromise<void> =>
@@ -34,18 +34,19 @@ export class G4ApiImpl {
   protected async http<ReqT, RespT>(
     method: string,
     path: string,
-    request?: ReqT
+    request?: ReqT,
   ): G4ResultPromise<RespT> {
     try {
       const headers: Record<string, string> = { "x-g4-tenant": this.tenant };
       if (this.appName) headers["x-g4-application"] = this.appName;
       if (request) headers["Content-Type"] = "application/json";
-      if (this.apikey !== null)
+      if (this.apikey !== null) {
         headers["Authorization"] = `apikey ${this.apikey}`;
-      else if (this.session !== null)
+      } else if (this.session !== null) {
         headers["Authorization"] = `bearer ${this.session}`;
-      else if (this.bearer !== null)
+      } else if (this.bearer !== null) {
         headers["Authorization"] = `bearer ${this.bearer}`;
+      }
       const response = await fetch(`${this.endpoint}${path}`, {
         method,
         headers,
@@ -64,7 +65,7 @@ export class G4ApiImpl {
 
   protected async searchPost<ReqT, RespT>(
     path: string,
-    request: ReqT
+    request: ReqT,
   ): G4ResultPromise<RespT> {
     try {
       const headers: Record<string, string> = {
@@ -72,8 +73,9 @@ export class G4ApiImpl {
         "Content-type": "application/json",
       };
       if (this.appName) headers["x-g4-application"] = this.appName;
-      if (this.sessionId !== null || this.bearer !== null)
+      if (this.sessionId !== null || this.bearer !== null) {
         headers["Authorization"] = `Bearer ${this.sessionId ?? this.bearer}`;
+      }
       const response = await fetch(`${this.search_endpoint}${path}`, {
         method: "POST",
         headers,
@@ -113,7 +115,7 @@ export class G4ApiImpl {
   async search(request: SearchRequest): G4ResultPromise<SearchResponse> {
     return await this.searchPost<SearchRequest, SearchResponse>(
       `/search/${this.tenant}`,
-      request
+      request,
     );
   }
 
@@ -124,14 +126,15 @@ export class G4ApiImpl {
         "Content-type": "application/json",
       };
       if (this.appName) headers["x-g4-application"] = this.appName;
-      if (this.sessionId !== null || this.bearer !== null)
+      if (this.sessionId !== null || this.bearer !== null) {
         headers["Authorization"] = `Bearer ${this.sessionId ?? this.bearer}`;
+      }
       const response = await fetch(
         `${this.search_endpoint}/manifest/${this.tenant}`,
         {
           method: "POST",
           headers,
-        }
+        },
       );
       const bearer = response.headers.get("x-g4-bearer");
       if (bearer != null) this.bearerToken = bearer;
@@ -154,11 +157,15 @@ export class G4ApiImpl {
 }
 
 async function mapG4Response<RespT>(
-  response: Response
+  response: Response,
 ): G4ResultPromise<RespT> {
   switch (response.status) {
     case 200:
-      return Ok(await response.json());
+      try {
+        return Ok(await response.json());
+      } catch (err: unknown) {
+        return Ok({} as RespT);
+      }
     case 204:
       return Err({
         status: response.status,
@@ -172,13 +179,13 @@ async function mapG4Response<RespT>(
         message: response.statusText,
         ...(g4error === null
           ? {
-              source: "http",
-              details: { text: await response.text() },
-            }
+            source: "http",
+            details: { text: await response.text() },
+          }
           : {
-              source: "g4",
-              details: await response.json(),
-            }),
+            source: "g4",
+            details: await response.json(),
+          }),
       });
     }
     case 401:
