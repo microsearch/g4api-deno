@@ -43,7 +43,7 @@ export class G4Api extends G4ApiImpl {
     await this.get("/admins");
 
   createAdminUser = async (
-    request: api.CreateAdminRequest
+    request: api.CreateAdminRequest,
   ): G4ResultPromise<api.CreateAdminResponse> =>
     await this.post("/admin", request);
 
@@ -51,7 +51,7 @@ export class G4Api extends G4ApiImpl {
     authentication API
   */
   authenticateUser = async (
-    request: api.UserAuthenticationRequest
+    request: api.UserAuthenticationRequest,
   ): G4ResultPromise<api.UserAuthenticationResponse> =>
     await this.post("/auth", request);
 
@@ -62,7 +62,7 @@ export class G4Api extends G4ApiImpl {
     await this.get("/policy/password");
 
   changePassword = async (
-    request: api.PasswordChangeRequest
+    request: api.PasswordChangeRequest,
   ): G4ResultPromise<void> => await this.put("/password", request);
 
   processPendingG3Requests = async (): G4ResultPromise<void> =>
@@ -75,35 +75,35 @@ export class G4Api extends G4ApiImpl {
     await this.get("/collections");
 
   createCollection = async (
-    request: api.CreateCollectionRequest
+    request: api.CreateCollectionRequest,
   ): G4ResultPromise<api.CreateCollectionResponse> =>
     await this.post("/collections", request);
 
   updateCollection = async (
-    request: api.UpdateCollectionRequest
+    request: api.UpdateCollectionRequest,
   ): G4ResultPromise<api.UpdateCollectionResponse> =>
     await this.post("/collection", request);
 
   getCollectionContents = async (
-    request: api.CollectionContentsRequest
+    request: api.CollectionContentsRequest,
   ): G4ResultPromise<api.CollectionContentsResponse> =>
     await this.post("/collection-contents", request);
 
   getCollectionContentsDocuments = async (
-    request: api.CollectionContentsDocumentsRequest
+    request: api.CollectionContentsDocumentsRequest,
   ): G4ResultPromise<api.CollectionContentsDocumentsResponse> =>
     await this.post("/collection-contents-documents", request);
 
   getCollectionMetadata = async (
     id: number,
-    app?: string
+    app?: string,
   ): G4ResultPromise<AppMetadata> =>
     await this.get(metadataPath("collection", id, app));
 
   setCollectionMetadata = async (
     id: number,
     metadata: AppMetadata,
-    app?: string
+    app?: string,
   ): G4ResultPromise<void> =>
     await this.put(metadataPath("collection", id, app), metadata);
 
@@ -111,7 +111,7 @@ export class G4Api extends G4ApiImpl {
     documents API
   */
   prepareDocumentUpload = async (
-    request: api.LoadDocumentRequest
+    request: api.LoadDocumentRequest,
   ): G4ResultPromise<api.LoadDocumentResponse> =>
     await this.post("/documents", request);
 
@@ -125,7 +125,7 @@ export class G4Api extends G4ApiImpl {
     await this.post("/export-users");
 
   importUsers = async (
-    request: api.ImportUsersRequest
+    request: api.ImportUsersRequest,
   ): G4ResultPromise<api.ImportUsersResponse> =>
     await this.post("/import-users", request);
 
@@ -133,25 +133,25 @@ export class G4Api extends G4ApiImpl {
     internal API
   */
   requestUserClaimTokens = async (
-    email: string
+    email: string,
   ): G4ResultPromise<api.SecurityToken> =>
     await this.get(`/user-claim-tokens?email=${encodeURIComponent(email)}`);
 
   requestUserPasswordResetTokens = async (
-    email: string
+    email: string,
   ): G4ResultPromise<api.SecurityToken> =>
     await this.get(`/user-reset-tokens?email=${encodeURIComponent(email)}`);
 
   claimAccount = async (
-    request: api.UserClaimAccountRequest
+    request: api.UserClaimAccountRequest,
   ): G4ResultPromise<void> => await this.put("/user-claim", request);
 
   resetUserPassword = async (
-    request: api.UserResetPasswordRequest
+    request: api.UserResetPasswordRequest,
   ): G4ResultPromise<void> => await this.put("/user-password", request);
 
   getUserDetails = async (
-    id: number
+    id: number,
   ): G4ResultPromise<api.GetUserDetailsResponse> =>
     await this.get(`/user-details/${id}`);
 
@@ -166,7 +166,7 @@ export class G4Api extends G4ApiImpl {
 
   updateProfile = async (
     id: number,
-    request: api.UpdateProfileRequest
+    request: api.UpdateProfileRequest,
   ): G4ResultPromise<api.UpdateProfileResponse> =>
     await this.put(`/profile/${id}`, request);
 
@@ -174,20 +174,20 @@ export class G4Api extends G4ApiImpl {
     await this.delete(`/profile/${id}`);
 
   createProfile = async (
-    request: api.CreateProfileRequest
+    request: api.CreateProfileRequest,
   ): G4ResultPromise<api.CreateProfileResponse> =>
     await this.post("/profile", request);
 
   getProfileMetadata = async (
     id: number,
-    app?: string
+    app?: string,
   ): G4ResultPromise<AppMetadata> =>
     await this.get(metadataPath("profile", id, app));
 
   setProfileMetadata = async (
     id: number,
     metadata: AppMetadata,
-    app?: string
+    app?: string,
   ): G4ResultPromise<void> =>
     await this.put(metadataPath("profile", id, app), metadata);
 
@@ -195,7 +195,7 @@ export class G4Api extends G4ApiImpl {
     roles API
   */
   getRolesInScope = async (
-    scope: string
+    scope: string,
   ): G4ResultPromise<api.GetRolesResponse> =>
     await this.get(`/roles/${encodeURI(scope)}`);
 
@@ -207,7 +207,7 @@ export class G4Api extends G4ApiImpl {
 
   updateRole = async (
     id: number,
-    request: api.UpdateRoleRequest
+    request: api.UpdateRoleRequest,
   ): G4ResultPromise<api.RoleResponse> =>
     await this.put(`/role/${id}`, request);
 
@@ -215,20 +215,20 @@ export class G4Api extends G4ApiImpl {
     await this.delete(`/role/${id}`);
 
   createRole = async (
-    request: api.CreateRoleRequest
+    request: api.CreateRoleRequest,
   ): G4ResultPromise<api.CreateRoleResponse> =>
     await this.post("/role", request);
 
   getRoleMetadata = async (
     id: number,
-    app?: string
+    app?: string,
   ): G4ResultPromise<AppMetadata> =>
     await this.get(metadataPath("role", id, app));
 
   setRoleMetadata = async (
     id: number,
     metadata: AppMetadata,
-    app?: string
+    app?: string,
   ): G4ResultPromise<void> =>
     await this.put(metadataPath("role", id, app), metadata);
 
@@ -236,12 +236,17 @@ export class G4Api extends G4ApiImpl {
     sessions API
   */
   createSession = async (
-    request: api.CreateSessionRequest
+    request: api.CreateSessionRequest,
   ): G4ResultPromise<api.AuthenticatedSessionResponse> =>
     await this.post("/session", request);
 
   getSession = async (id: string): G4ResultPromise<api.GetSessionResponse> =>
     await this.get(`/session/${id}`);
+
+  getStaticSession = async (
+    id: string,
+  ): G4ResultPromise<api.GetSessionResponse> =>
+    await this.get(`/static-session/${id}`);
 
   updateSession = async (id: string, data: unknown): G4ResultPromise<void> =>
     await this.put(`/session/${id}`, data);
@@ -265,7 +270,7 @@ export class G4Api extends G4ApiImpl {
     await this.delete(`/tenant/${id}`);
 
   createTenant = async (
-    request: api.CreateTenantRequest
+    request: api.CreateTenantRequest,
   ): G4ResultPromise<api.CreateTenantResponse> =>
     await this.post("/tenant", request);
 
@@ -273,7 +278,7 @@ export class G4Api extends G4ApiImpl {
     users API
   */
   getUserList = async (
-    request: api.GetUsersRequest
+    request: api.GetUsersRequest,
   ): G4ResultPromise<api.GetUsersWithAppMetadataResponse> =>
     await this.post("/users", request);
 
@@ -282,7 +287,7 @@ export class G4Api extends G4ApiImpl {
 
   updateUser = async (
     id: number,
-    request: api.UpdateUserRequest
+    request: api.UpdateUserRequest,
   ): G4ResultPromise<api.UpdateUserResponse> =>
     await this.put(`/user/${id}`, request);
 
@@ -290,38 +295,38 @@ export class G4Api extends G4ApiImpl {
     await this.delete(`/user/${id}`);
 
   createUser = async (
-    request: api.CreateUserRequest
+    request: api.CreateUserRequest,
   ): G4ResultPromise<api.CreateUserResponse> =>
     await this.post("/user", request);
 
   getUserEvents = async (
-    request: api.GetUserEventsRequest
+    request: api.GetUserEventsRequest,
   ): G4ResultPromise<api.GetUserEventsResponse> =>
     await this.post("/user-events", request);
 
   getUserMetadata = async (
     id: number,
-    app?: string
+    app?: string,
   ): G4ResultPromise<AppMetadata> =>
     await this.get(metadataPath("user", id, app));
 
   setUserMetadata = async (
     id: number,
     metadata: AppMetadata,
-    app?: string
+    app?: string,
   ): G4ResultPromise<void> =>
     await this.put(metadataPath("user", id, app), metadata);
 
   getTenantMetadata = async (
     id: number,
-    app?: string
+    app?: string,
   ): G4ResultPromise<AppMetadata> =>
     await this.get(metadataPath("tenant", id, app));
 
   setTenantMetadata = async (
     id: number,
     metadata: AppMetadata,
-    app?: string
+    app?: string,
   ): G4ResultPromise<void> =>
     await this.put(metadataPath("tenant", id, app), metadata);
 }
