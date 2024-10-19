@@ -15,8 +15,11 @@ export interface AdminUser {
   /** @format date-time */
   created: string;
   status: UserStatus;
+  /** @minLength 1 */
   username: string;
+  /** @minLength 1 */
   fullname: string;
+  /** @minLength 1 */
   email: string;
   roles: number[];
   /** @format date-time */
@@ -25,29 +28,38 @@ export interface AdminUser {
 }
 
 export interface Attachment {
+  /** @minLength 1 */
   filename: string;
+  /** @minLength 1 */
   signature: string;
 }
 
 export interface AuthenticatedSessionResponse {
   validCredentials: boolean;
   accessAllowed: boolean;
+  /** @minLength 1 */
   sessionId: string | null;
   /** @format int32 */
   userId: number | null;
+  /** @minLength 1 */
   username: string | null;
+  /** @minLength 1 */
   fullname: string | null;
+  /** @minLength 1 */
   email: string | null;
+  /** @minLength 1 */
   bearer: string | null;
   claims: string[] | null;
   roles: string[] | null;
   profiles: string[] | null;
+  /** @minLength 1 */
   version: string;
 }
 
 export interface Collection {
   /** @format int32 */
   id: number;
+  /** @minLength 1 */
   name: string;
   schema: Record<string, FieldDescriptor>;
   /** @format date-time */
@@ -57,7 +69,9 @@ export interface Collection {
 }
 
 export interface CollectionContentsDocument {
+  /** @minLength 1 */
   title: string;
+  /** @minLength 1 */
   signature: string;
   docMetadata: Record<string, string>;
   archived: boolean;
@@ -85,8 +99,11 @@ export interface CollectionContentsResponse {
 }
 
 export interface CollectionDocument {
+  /** @minLength 1 */
   signature: string;
+  /** @minLength 1 */
   title: string;
+  /** @minLength 1 */
   mimeType: string;
   docMetadata: Record<string, string>;
   attachments: Attachment[];
@@ -95,7 +112,9 @@ export interface CollectionDocument {
 }
 
 export interface CollectionDocumentUpdate {
+  /** @minLength 1 */
   signature: string;
+  /** @minLength 1 */
   title: string;
   docMetadata: Record<string, string>;
   attachments: Attachment[];
@@ -104,23 +123,29 @@ export interface CollectionDocumentUpdate {
 }
 
 export interface CollectionNode {
+  /** @minLength 1 */
   value: string;
   key: string[];
   children: CollectionNode[] | null;
 }
 
 export interface ContentsField {
+  /** @minLength 1 */
   name: string;
+  /** @minLength 1 */
   value: string;
 }
 
 export interface CreateAdminRequest {
+  /** @minLength 1 */
   username: string;
   password?: string;
   passwordCrypto?: string;
   passwordSalt?: string;
   passwordHash?: string;
+  /** @minLength 1 */
   fullname: string;
+  /** @minLength 1 */
   email: string;
   roles: number[];
 }
@@ -131,6 +156,7 @@ export interface CreateAdminResponse {
 }
 
 export interface CreateCollectionRequest {
+  /** @minLength 1 */
   name: string;
   schema: Record<string, FieldDescriptor>;
 }
@@ -141,6 +167,7 @@ export interface CreateCollectionResponse {
 }
 
 export interface CreateProfileRequest {
+  /** @minLength 1 */
   name: string;
   collections: number[];
 }
@@ -152,6 +179,7 @@ export interface CreateProfileResponse {
 
 export interface CreateRoleRequest {
   defaultScope?: string | null;
+  /** @minLength 1 */
   name: string;
   claims?: string[] | null;
 }
@@ -162,9 +190,15 @@ export interface CreateRoleResponse {
 }
 
 export interface CreateSessionRequest {
-  /** @example "user@microsearch.net" */
+  /**
+   * @minLength 1
+   * @example "user@microsearch.net"
+   */
   username: string;
-  /** @example "password123" */
+  /**
+   * @minLength 1
+   * @example "password123"
+   */
   password: string;
   data?: any;
   /** @format int32 */
@@ -173,6 +207,7 @@ export interface CreateSessionRequest {
 }
 
 export interface CreateTenantRequest {
+  /** @minLength 1 */
   name: string;
   description?: string | null;
 }
@@ -184,15 +219,20 @@ export interface CreateTenantResponse {
 
 export interface CreateUserRequest {
   status: UserStatus;
+  /** @minLength 1 */
   username: string;
+  /** @minLength 1 */
   password: string;
+  /** @minLength 1 */
   fullname: string;
+  /** @minLength 1 */
   email: string;
   roles: number[];
   profiles: number[];
   collections: number[];
   denyCollections: number[];
   customFields: Record<string, any>;
+  /** @minLength 1 */
   appName: string | null;
   appMetadata?: Record<string, any>;
 }
@@ -207,30 +247,37 @@ export interface DeleteUnverifiedDocumentsResponse {
   count: number;
 }
 
+export interface ExportUsersResponse {
+  /** @minLength 1 */
+  tenant: string;
+  /** @minLength 1 */
+  version: string;
+  /** @minLength 1 */
+  stage: string;
+  /** @format date-time */
+  exported: string;
+  users: ExportedUser[];
+}
+
 export interface ExportedUser {
   /** @format date-time */
   created: string;
   status: UserStatus;
+  /** @minLength 1 */
   username: string;
+  /** @minLength 1 */
   fullname: string;
+  /** @minLength 1 */
   email: string;
   roles: string[];
   profiles: string[];
   collections: string[];
   denyCollections: string[];
+  /** @minLength 1 */
   passwordHash: string;
   /** @format date-time */
-  archived: string | null;
+  archived?: string | null;
   metadata: Record<string, Record<string, any>>;
-}
-
-export interface ExportUsersResponse {
-  tenant: string;
-  version: string;
-  stage: string;
-  /** @format date-time */
-  exported: string;
-  users: ExportedUser[];
 }
 
 export type FieldDescriptor = object;
@@ -238,48 +285,66 @@ export type FieldDescriptor = object;
 export interface G4AuthAuthMessage {
   validCredentials: boolean;
   accessAllowed: boolean;
+  /** @minLength 1 */
   username: string;
+  /** @minLength 1 */
   host: string;
 }
 
 export interface G4CollectionLoadedMessage {
   /** @format int32 */
   count: number;
+  /** @minLength 1 */
   name: string;
 }
 
 export interface G4CollectionLoadingMessage {
   /** @format int32 */
   count: number;
+  /** @minLength 1 */
   name: string;
+  /** @minLength 1 */
   title: string;
 }
 
 export interface G4DocumentLoadedMessage {
+  /** @minLength 1 */
   username: string;
   /** @format int64 */
   docId: number;
+  /** @minLength 1 */
   signature: string;
+  /** @minLength 1 */
   mimeType: string | null;
+  /** @minLength 1 */
   filename: string | null;
+  /** @minLength 1 */
   loaded: string | null;
   policies: string[];
+  /** @minLength 1 */
   jobId: string | null;
 }
 
 export interface G4SessionCloseMessage {
+  /** @minLength 1 */
   sessionId: string;
+  /** @minLength 1 */
   host: string;
 }
 
 export interface G4SessionCreateMessage {
+  /** @minLength 1 */
   sessionId: string;
+  /** @minLength 1 */
   username: string;
+  /** @minLength 1 */
   host: string;
 }
 
 export interface G4SessionFailMessage {
+  /** @minLength 1 */
   username: string;
+  /** @minLength 1 */
   host: string;
 }
 
@@ -291,34 +356,43 @@ export interface G4TenantArchiveMessage {
 export interface G4TenantCreateMessage {
   /** @format int32 */
   tenantId: number;
+  /** @minLength 1 */
   name: string;
+  /** @minLength 1 */
   description: string | null;
 }
 
 export interface G4UserArchiveMessage {
   /** @format int32 */
   id: number;
+  /** @minLength 1 */
   host: string;
 }
 
 export interface G4UserCreateMessage {
+  /** @minLength 1 */
   username: string;
   /** @format int32 */
   id: number;
+  /** @minLength 1 */
   host: string;
 }
 
 export interface G4UserImportMessage {
+  /** @minLength 1 */
   username: string;
   /** @format int32 */
   id: number;
+  /** @minLength 1 */
   host: string;
 }
 
 export interface G4UserUpdateMessage {
+  /** @minLength 1 */
   username: string | null;
   /** @format int32 */
   id: number;
+  /** @minLength 1 */
   host: string;
 }
 
@@ -327,6 +401,7 @@ export interface GetAdminsResponse {
 }
 
 export interface GetCollectionResponse {
+  /** @minLength 1 */
   bucketName: string;
   /** @format uuid */
   tenantRepoId: string;
@@ -340,6 +415,7 @@ export interface GetCollectionsResponse {
 export interface GetProfileResponse {
   /** @format int32 */
   id: number;
+  /** @minLength 1 */
   name: string;
   collections: number[];
 }
@@ -354,6 +430,7 @@ export interface GetRolesResponse {
 }
 
 export interface GetSessionResponse {
+  /** @minLength 1 */
   bearer: string;
   /** @format int32 */
   userId: number;
@@ -363,15 +440,68 @@ export interface GetSessionResponse {
 export interface GetTenantResponse {
   /** @format int32 */
   id: number;
+  /** @minLength 1 */
   name: string;
   /** @format date-time */
   created: string;
+  /** @minLength 1 */
   description: string | null;
   /** @format uuid */
   repository: string;
-  activeUsers: Record<string, number>;
-  archivedUsers: Record<string, number>;
-  userEvents: Record<string, number>;
+  activeUsers: {
+    /** @format int32 */
+    Pending?: number;
+    /** @format int32 */
+    Active?: number;
+    /** @format int32 */
+    Inactive?: number;
+    /** @format int32 */
+    Reset?: number;
+    /** @format int32 */
+    Validating?: number;
+    /** @format int32 */
+    Anonymous?: number;
+  };
+  archivedUsers: {
+    /** @format int32 */
+    Pending?: number;
+    /** @format int32 */
+    Active?: number;
+    /** @format int32 */
+    Inactive?: number;
+    /** @format int32 */
+    Reset?: number;
+    /** @format int32 */
+    Validating?: number;
+    /** @format int32 */
+    Anonymous?: number;
+  };
+  userEvents: {
+    /** @format int32 */
+    UserAuthenticated?: number;
+    /** @format int32 */
+    UserAuthenticationFailure?: number;
+    /** @format int32 */
+    UserClaimTokens?: number;
+    /** @format int32 */
+    UserResetTokens?: number;
+    /** @format int32 */
+    UserClaimTokenVerification?: number;
+    /** @format int32 */
+    UserResetTokenVerification?: number;
+    /** @format int32 */
+    AdminCreated?: number;
+    /** @format int32 */
+    UserCreated?: number;
+    /** @format int32 */
+    UserImported?: number;
+    /** @format int32 */
+    UserUpdated?: number;
+    /** @format int32 */
+    PasswordChanged?: number;
+    /** @format int32 */
+    UserArchived?: number;
+  };
   /** @format date-time */
   firstEvent: string | null;
   /** @format date-time */
@@ -388,8 +518,11 @@ export interface GetUserDetailsResponse {
   /** @format date-time */
   created: string;
   status: UserStatus;
+  /** @minLength 1 */
   username: string;
+  /** @minLength 1 */
   fullname: string;
+  /** @minLength 1 */
   email: string;
   roles: number[];
   profiles: number[];
@@ -429,8 +562,11 @@ export interface GetUserResponse {
   /** @format date-time */
   created: string;
   status: UserStatus;
+  /** @minLength 1 */
   username: string;
+  /** @minLength 1 */
   fullname: string;
+  /** @minLength 1 */
   email: string;
   roles: number[];
   profiles: number[];
@@ -454,6 +590,7 @@ export interface GetUsersRequest {
 export interface GetUsersWithAppMetadataResponse {
   /** @format int32 */
   total: number;
+  /** @minLength 1 */
   contains: string | null;
   /** @format int32 */
   skip: number | null;
@@ -465,11 +602,17 @@ export interface GetUsersWithAppMetadataResponse {
 
 export interface ImportUserRequest {
   status: UserStatus;
+  /** @minLength 1 */
   username: string;
+  /** @minLength 1 */
   passwordCrypto: string;
+  /** @minLength 1 */
   passwordSalt: string;
+  /** @minLength 1 */
   passwordHash: string;
+  /** @minLength 1 */
   fullname: string;
+  /** @minLength 1 */
   email: string;
   roles: number[];
   profiles: number[];
@@ -483,12 +626,13 @@ export interface ImportUserRequest {
 export interface ImportUserResponse {
   /** @format int32 */
   id: number;
+  /** @minLength 1 */
   bearer: string;
 }
 
 export interface ImportUsersRequest {
+  /** @minLength 1 */
   tenant: string;
-  version: string;
   users: ExportedUser[];
 }
 
@@ -502,6 +646,7 @@ export interface ImportUsersResponse {
 }
 
 export interface LoadDocumentRequest {
+  /** @minLength 1 */
   signature: string;
   filename?: string | null;
   process?: ProcessingSettings;
@@ -510,6 +655,7 @@ export interface LoadDocumentRequest {
 export interface LoadDocumentResponse {
   /** @format int64 */
   id: number;
+  /** @minLength 1 */
   signedUploadUrl: string | null;
 }
 
@@ -518,8 +664,11 @@ export interface LoadedDocumentsResponse {
 }
 
 export interface PasswordChangeRequest {
+  /** @minLength 1 */
   username: string;
+  /** @minLength 1 */
   password: string;
+  /** @minLength 1 */
   newPassword: string;
 }
 
@@ -552,8 +701,10 @@ export interface ProcessingSettings {
 }
 
 export interface RefreshResponse {
+  /** @minLength 1 */
   username: string;
   claims: string[];
+  /** @minLength 1 */
   bearer: string;
 }
 
@@ -565,12 +716,18 @@ export interface RetrievedUserEvent {
   /** @format date-time */
   occurred: string;
   eventType: UserEventType;
+  /** @minLength 1 */
   host: string;
+  /** @minLength 1 */
   appName: string | null;
   detail: Record<string, any>;
+  /** @minLength 1 */
   username: string;
+  /** @minLength 1 */
   fullname: string;
+  /** @minLength 1 */
   activeUsername: string;
+  /** @minLength 1 */
   activeFullname: string;
   status: UserStatus;
 }
@@ -578,14 +735,19 @@ export interface RetrievedUserEvent {
 export interface RoleResponse {
   /** @format int32 */
   id: number;
+  /** @minLength 1 */
   scope: string;
+  /** @minLength 1 */
   name: string;
   claims: string[];
 }
 
 export interface SecurityToken {
+  /** @minLength 1 */
   username: string | null;
+  /** @minLength 1 */
   fullname: string;
+  /** @minLength 1 */
   token: string;
 }
 
@@ -612,13 +774,17 @@ export interface UpdateProfileRequest {
 export interface UpdateProfileResponse {
   /** @format int32 */
   id: number;
+  /** @minLength 1 */
   name: string;
   collections: number[];
 }
 
 export interface UpdateResult {
+  /** @minLength 1 */
   signature: string;
+  /** @minLength 1 */
   result: string;
+  /** @minLength 1 */
   detail: string | null;
 }
 
@@ -651,8 +817,11 @@ export interface UpdateUserResponse {
   /** @format int32 */
   id: number;
   status: UserStatus;
+  /** @minLength 1 */
   username: string;
+  /** @minLength 1 */
   fullname: string;
+  /** @minLength 1 */
   email: string;
   roles: number[];
   profiles: number[];
@@ -664,9 +833,15 @@ export interface UpdateUserResponse {
 }
 
 export interface UserAuthenticationRequest {
-  /** @example "user@microsearch.net" */
+  /**
+   * @minLength 1
+   * @example "user@microsearch.net"
+   */
   username: string;
-  /** @example "password123" */
+  /**
+   * @minLength 1
+   * @example "password123"
+   */
   password: string;
   detail?: Record<string, any>;
 }
@@ -676,17 +851,23 @@ export interface UserAuthenticationResponse {
   accessAllowed: boolean;
   /** @format int32 */
   userId: number | null;
+  /** @minLength 1 */
   username: string | null;
+  /** @minLength 1 */
   fullname: string | null;
+  /** @minLength 1 */
   email: string | null;
+  /** @minLength 1 */
   bearer: string | null;
   claims: string[] | null;
   roles: string[] | null;
   profiles: string[] | null;
+  /** @minLength 1 */
   version: string;
 }
 
 export interface UserClaimAccountRequest {
+  /** @minLength 1 */
   token: string;
   username?: string | null;
   password?: string | null;
@@ -709,6 +890,7 @@ export enum UserEventType {
 }
 
 export interface UserResetPasswordRequest {
+  /** @minLength 1 */
   token: string;
   password?: string | null;
 }
@@ -727,8 +909,11 @@ export interface UserWithAppMetadata {
   /** @format int32 */
   id: number;
   status: UserStatus;
+  /** @minLength 1 */
   username: string;
+  /** @minLength 1 */
   fullname: string;
+  /** @minLength 1 */
   email: string;
   roles: number[];
   profiles: number[];
@@ -958,7 +1143,7 @@ export class HttpClient<SecurityDataType = unknown> {
           : payloadFormatter(body),
       },
     ).then(async (response) => {
-      const r = response as HttpResponse<T, E>;
+      const r = response.clone() as HttpResponse<T, E>;
       r.data = null as unknown as T;
       r.error = null as unknown as E;
 

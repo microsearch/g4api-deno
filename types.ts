@@ -57,6 +57,7 @@ export type G4Manifest = {
   tenant: string;
   tenantRepoId: string;
   indexes: FieldIndexSchema[];
+  index_data: FieldIndexData[];
   collections: CollectionManifest[];
 };
 
@@ -64,6 +65,30 @@ export type FieldIndexSchema = {
   fieldname: string;
   index_type: string;
 };
+
+export type FieldIndexData = {
+  fieldname: string;
+  index_desc:
+    | TextIndexData
+    | DateIndexData
+    | NumericIndexData
+    | CharacterIndexData;
+};
+
+export type TextIndexData = { index_type: "text" };
+export type DateIndexData = {
+  index_type: "date";
+  values: { lo: number; hi: number };
+};
+export type NumericIndexData = {
+  index_type: "number";
+  values: { lo: number; hi: number };
+};
+export type CharacterIndexData = {
+  index_type: "character";
+  values: CharacterValue[];
+};
+export type CharacterValue = { value: string; count: number };
 
 export type CollectionManifest = {
   id: number;
