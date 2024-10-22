@@ -66,13 +66,15 @@ export type FieldIndexSchema = {
   index_type: string;
 };
 
+export type FieldIndexDesc =
+  | TextIndexData
+  | DateIndexData
+  | NumericIndexData
+  | CharacterIndexData;
+
 export type FieldIndexData = {
   fieldname: string;
-  index_desc:
-    | TextIndexData
-    | DateIndexData
-    | NumericIndexData
-    | CharacterIndexData;
+  index_desc: FieldIndexDesc;
 };
 
 export type TextIndexData = { index_type: "text" };
