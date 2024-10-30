@@ -1,6 +1,10 @@
 import * as api from "./Api.ts";
 import { G4ApiImpl } from "./impl.ts";
-import { AppMetadata, G4ResultPromise } from "./types.ts";
+import {
+  AppMetadata,
+  type DocMetadataResponse,
+  G4ResultPromise,
+} from "./types.ts";
 
 export * from "./Api.ts";
 export * from "./types.ts";
@@ -117,6 +121,11 @@ export class G4Api extends G4ApiImpl {
 
   verifyDocumentUpload = async (id: number): G4ResultPromise<void> =>
     await this.post(`/document/${id}`);
+
+  docMetadata = async (
+    signature: string,
+  ): G4ResultPromise<DocMetadataResponse[]> =>
+    await this.get(`/docmetadata/${signature}`);
 
   /*
     import/export API

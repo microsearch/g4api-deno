@@ -51,6 +51,11 @@ export type ManifestResponse = {
   manifest: G4Manifest | null;
 };
 
+export type DocMetadataResponse = {
+  collection_name: string;
+  metadata: object;
+};
+
 export type G4Manifest = {
   tag: string;
   version: string;
