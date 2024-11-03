@@ -52,8 +52,8 @@ export type ManifestResponse = {
 };
 
 export type DocMetadataResponse = {
-  collection_name: string;
-  metadata: object;
+  collectionName: string;
+  metadata: Record<string, string>;
 };
 
 export type G4Manifest = {
