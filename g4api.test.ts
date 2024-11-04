@@ -121,11 +121,11 @@ Deno.test("change password", async () => {
   });
 });
 
-// Deno.test("doc metadata", async () => {
+// Deno.test("doc info", async () => {
 //   const g4api = new G4Api("dev", tenant, appName);
 //   await g4api.connect(credentials);
 
-//   const response = (await g4api.docMetadata(
+//   const response = (await g4api.docInfo(
 //     "2A73EQdSmDoPCczfyalzSb7EvTAX9LIupgB6iFx2ekE",
 //   )).unwrap();
 //   console.log({ response });

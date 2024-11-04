@@ -247,6 +247,15 @@ export interface DeleteUnverifiedDocumentsResponse {
   count: number;
 }
 
+export interface DocInfoResponse {
+  /** @minLength 1 */
+  collectionName: string;
+  metadata: Record<string, string>;
+  /** @minLength 1 */
+  filename: string;
+  attachments: Attachment[];
+}
+
 export interface ExportUsersResponse {
   /** @minLength 1 */
   tenant: string;
@@ -1626,6 +1635,25 @@ export class Api<SecurityDataType extends unknown>
         path: `/docfile/${tenant}/${sessionId}/${signature}`,
         method: "GET",
         secure: true,
+        ...params,
+      }),
+  };
+  docinfo = {
+    /**
+     * No description
+     *
+     * @tags Documents
+     * @name DocinfoDetail
+     * @summary Retrieve document info
+     * @request GET:/docinfo/{signature}
+     * @secure
+     */
+    docinfoDetail: (signature: string, params: RequestParams = {}) =>
+      this.request<DocInfoResponse[], ProblemDetails>({
+        path: `/docinfo/${signature}`,
+        method: "GET",
+        secure: true,
+        format: "json",
         ...params,
       }),
   };
