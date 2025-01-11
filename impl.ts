@@ -15,6 +15,19 @@ export class G4ApiImpl {
     this.appName = appName;
   }
 
+  /*
+    endpoint overrides - call immediately after constructor - for debugging only
+  */
+  public local_api(endpoint?: string) {
+    this.endpoint = endpoint ?? "http:://localhost:5000";
+    console.log("api endpoint:", this.endpoint);
+  }
+
+  public local_search(endpoint?: string) {
+    this.search_endpoint = endpoint ?? "http://localhost:3000";
+    console.log("search endpoint:", this.search_endpoint);
+  }
+
   protected get = async <RespT>(path: string): G4ResultPromise<RespT> =>
     await this.http("GET", path);
 
