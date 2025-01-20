@@ -19,7 +19,7 @@ export class G4ApiImpl {
     endpoint overrides - call immediately after constructor - for debugging only
   */
   public local_api(endpoint?: string) {
-    this.endpoint = endpoint ?? "http:://localhost:5000";
+    this.endpoint = endpoint ?? "http://localhost:5000";
     console.log("api endpoint:", this.endpoint);
   }
 
