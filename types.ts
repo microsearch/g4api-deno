@@ -51,13 +51,19 @@ export type ManifestResponse = {
   manifest: G4Manifest | null;
 };
 
+export type CollectionName = string;
+export type IndexManifest = Record<CollectionName, FieldIndexManifest>;
+
+export type FieldName = string;
+export type FieldIndexManifest = Record<FieldName, FieldIndexDesc>;
+
 export type G4Manifest = {
   tag: string;
   version: string;
   tenant: string;
   tenantRepoId: string;
   indexes: FieldIndexSchema[];
-  index_manifest: Record<string, FieldIndexDesc>;
+  index_manifest: IndexManifest;
   collections: CollectionManifest[];
 };
 
@@ -66,6 +72,7 @@ export type FieldIndexSchema = {
   index_type: string;
 };
 
+// index_type is the discriminant
 export type FieldIndexDesc =
   | TextIndexData
   | DateIndexData
