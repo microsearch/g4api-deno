@@ -1,6 +1,7 @@
 import { Err, Ok } from "monads";
 
 import {
+  FieldIndexDesc,
   G4ResultPromise,
   ManifestResponse,
   SearchRequest,
@@ -127,7 +128,7 @@ export class G4ApiImpl {
 
   async search(request: SearchRequest): G4ResultPromise<SearchResponse> {
     return await this.searchPost<SearchRequest, SearchResponse>(
-      `/search/${this.tenant}`,
+      `/search`,
       request,
     );
   }
@@ -143,10 +144,42 @@ export class G4ApiImpl {
         headers["Authorization"] = `Bearer ${this.sessionId ?? this.bearer}`;
       }
       const response = await fetch(
-        `${this.search_endpoint}/manifest/${this.tenant}`,
+        `${this.search_endpoint}/manifest`,
         {
           method: "POST",
           headers,
+        },
+      );
+      const bearer = response.headers.get("x-g4-bearer");
+      if (bearer != null) this.bearerToken = bearer;
+      return await mapG4Response(response);
+    } catch (error: unknown) {
+      return Err({
+        source: "network",
+        message: error instanceof Error ? error.message : "unknown error",
+      });
+    }
+  }
+
+  async field_index_manifest(
+    fieldname: string,
+    collections: string[],
+  ): G4ResultPromise<FieldIndexDesc> {
+    try {
+      const headers: Record<string, string> = {
+        "x-g4-tenant": this.tenant,
+        "Content-type": "application/json",
+      };
+      if (this.appName) headers["x-g4-application"] = this.appName;
+      if (this.sessionId !== null || this.bearer !== null) {
+        headers["Authorization"] = `Bearer ${this.sessionId ?? this.bearer}`;
+      }
+      const response = await fetch(
+        `${this.search_endpoint}/field-index-manifest`,
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify({ fieldname, collections }),
         },
       );
       const bearer = response.headers.get("x-g4-bearer");
@@ -206,6 +239,12 @@ async function mapG4Response<RespT>(
         status: response.status,
         source: "auth",
         message: "unauthorized request",
+      });
+    case 409:
+      return Err({
+        status: response.status,
+        source: "g4",
+        message: response.statusText,
       });
     default:
       return Err({
