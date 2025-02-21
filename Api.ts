@@ -84,6 +84,11 @@ export interface CollectionContentsDocumentsRequest {
   docMetadataFieldnames: string[];
 }
 
+export interface CollectionContentsDocumentsRequest2 {
+  contentsFields: ContentsField[];
+  docMetadataFieldnames: string[];
+}
+
 export interface CollectionContentsDocumentsResponse {
   documents: CollectionContentsDocument[];
 }
@@ -91,6 +96,10 @@ export interface CollectionContentsDocumentsResponse {
 export interface CollectionContentsRequest {
   /** @format int32 */
   collectionId: number;
+  contentsFieldnames: string[];
+}
+
+export interface CollectionContentsRequest2 {
   contentsFieldnames: string[];
 }
 
@@ -1430,7 +1439,7 @@ export class Api<SecurityDataType extends unknown>
      *
      * @tags Collections
      * @name CollectionContentsCreate
-     * @summary Get TOC tree for collection
+     * @summary Get TOC tree for collection (deprecated: Use /collection-contents/{collection}
      * @request POST:/collection-contents
      * @secure
      */
@@ -1447,6 +1456,32 @@ export class Api<SecurityDataType extends unknown>
         format: "json",
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags Collections
+     * @name CollectionContentsCreate2
+     * @summary Get TOC tree for collection
+     * @request POST:/collection-contents/{collection}
+     * @originalName collectionContentsCreate
+     * @duplicate
+     * @secure
+     */
+    collectionContentsCreate2: (
+      collection: string,
+      data: CollectionContentsRequest2,
+      params: RequestParams = {},
+    ) =>
+      this.request<CollectionContentsResponse, ProblemDetails>({
+        path: `/collection-contents/${collection}`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
   };
   collectionContentsDocuments = {
     /**
@@ -1454,7 +1489,7 @@ export class Api<SecurityDataType extends unknown>
      *
      * @tags Collections
      * @name CollectionContentsDocumentsCreate
-     * @summary Get TOC node documents for collection
+     * @summary Get TOC node documents for collection (deprecated: Use /collection-contents-documents/{collection}
      * @request POST:/collection-contents-documents
      * @secure
      */
@@ -1464,6 +1499,32 @@ export class Api<SecurityDataType extends unknown>
     ) =>
       this.request<CollectionContentsDocumentsResponse, ProblemDetails>({
         path: `/collection-contents-documents`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Collections
+     * @name CollectionContentsDocumentsCreate2
+     * @summary Get TOC node documents for collection
+     * @request POST:/collection-contents-documents/{collection}
+     * @originalName collectionContentsDocumentsCreate
+     * @duplicate
+     * @secure
+     */
+    collectionContentsDocumentsCreate2: (
+      collection: string,
+      data: CollectionContentsDocumentsRequest2,
+      params: RequestParams = {},
+    ) =>
+      this.request<CollectionContentsDocumentsResponse, ProblemDetails>({
+        path: `/collection-contents-documents/${collection}`,
         method: "POST",
         body: data,
         secure: true,
@@ -1597,7 +1658,7 @@ export class Api<SecurityDataType extends unknown>
      *
      * @tags Documents
      * @name HtmlfileDetail
-     * @summary Retrieve raw HTML file from repository (For use in HTML attributes only)
+     * @summary Retrieve raw HTML file from repository (NOT SUPPORTED: Use search service /html API instead)
      * @request GET:/htmlfile/{tenant}/{sessionId}/{signature}/{filename}
      * @secure
      */

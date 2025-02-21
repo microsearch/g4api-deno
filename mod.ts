@@ -85,14 +85,16 @@ export class G4Api extends G4ApiImpl {
     await this.post("/collection", request);
 
   getCollectionContents = async (
-    request: api.CollectionContentsRequest,
+    collection: string,
+    request: api.CollectionContentsRequest2,
   ): G4ResultPromise<api.CollectionContentsResponse> =>
-    await this.post("/collection-contents", request);
+    await this.post(`/collection-contents/${collection}`, request);
 
   getCollectionContentsDocuments = async (
-    request: api.CollectionContentsDocumentsRequest,
+    collection: string,
+    request: api.CollectionContentsDocumentsRequest2,
   ): G4ResultPromise<api.CollectionContentsDocumentsResponse> =>
-    await this.post("/collection-contents-documents", request);
+    await this.post(`/collection-contents-documents/${collection}`, request);
 
   getCollectionMetadata = async (
     id: number,
