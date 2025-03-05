@@ -258,6 +258,8 @@ export interface DeleteUnverifiedDocumentsResponse {
 
 export interface DocInfoResponse {
   /** @minLength 1 */
+  title: string;
+  /** @minLength 1 */
   collectionName: string;
   metadata: Record<string, string>;
   /** @minLength 1 */
