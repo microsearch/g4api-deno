@@ -69,8 +69,10 @@ export type G4Manifest = {
 
 export type FieldIndexSchema = {
   fieldname: string;
-  index_type: string;
+  index_type: FieldIndexType;
 };
+
+export type FieldIndexType = "text" | "date" | "number" | "character";
 
 // index_type is the discriminant
 export type FieldIndexDesc =
