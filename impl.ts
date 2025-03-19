@@ -161,7 +161,7 @@ export class G4ApiImpl {
     }
   }
 
-  async field_index_manifest(
+  async index_field_manifest(
     fieldname: string,
     collections: string[],
   ): G4ResultPromise<FieldIndexDesc> {
@@ -175,7 +175,7 @@ export class G4ApiImpl {
         headers["Authorization"] = `Bearer ${this.sessionId ?? this.bearer}`;
       }
       const response = await fetch(
-        `${this.search_endpoint}/field-index-manifest`,
+        `${this.search_endpoint}/index-field-manifest`,
         {
           method: "POST",
           headers,
