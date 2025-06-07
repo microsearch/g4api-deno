@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -8,6 +9,32 @@
  * ## SOURCE: https://github.com/acacode/swagger-typescript-api ##
  * ---------------------------------------------------------------
  */
+
+/** @format int32 */
+export enum UserStatus {
+  Value0 = 0,
+  Value1 = 1,
+  Value2 = 2,
+  Value3 = 3,
+  Value4 = 4,
+  Value5 = 5,
+}
+
+/** @format int32 */
+export enum UserEventType {
+  Value0 = 0,
+  Value1 = 1,
+  Value2 = 2,
+  Value3 = 3,
+  Value4 = 4,
+  Value5 = 5,
+  Value1000 = 1000,
+  Value1001 = 1001,
+  Value1002 = 1002,
+  Value1003 = 1003,
+  Value1004 = 1004,
+  Value1005 = 1005,
+}
 
 export interface AdminUser {
   /** @format int32 */
@@ -77,13 +104,6 @@ export interface CollectionContentsDocument {
   archived: boolean;
 }
 
-export interface CollectionContentsDocumentsRequest {
-  /** @format int32 */
-  collectionId: number;
-  contentsFields: ContentsField[];
-  docMetadataFieldnames: string[];
-}
-
 export interface CollectionContentsDocumentsRequest2 {
   contentsFields: ContentsField[];
   docMetadataFieldnames: string[];
@@ -91,12 +111,6 @@ export interface CollectionContentsDocumentsRequest2 {
 
 export interface CollectionContentsDocumentsResponse {
   documents: CollectionContentsDocument[];
-}
-
-export interface CollectionContentsRequest {
-  /** @format int32 */
-  collectionId: number;
-  contentsFieldnames: string[];
 }
 
 export interface CollectionContentsRequest2 {
@@ -893,36 +907,10 @@ export interface UserClaimAccountRequest {
   password?: string | null;
 }
 
-/** @format int32 */
-export enum UserEventType {
-  Value0 = 0,
-  Value1 = 1,
-  Value2 = 2,
-  Value3 = 3,
-  Value4 = 4,
-  Value5 = 5,
-  Value1000 = 1000,
-  Value1001 = 1001,
-  Value1002 = 1002,
-  Value1003 = 1003,
-  Value1004 = 1004,
-  Value1005 = 1005,
-}
-
 export interface UserResetPasswordRequest {
   /** @minLength 1 */
   token: string;
   password?: string | null;
-}
-
-/** @format int32 */
-export enum UserStatus {
-  Value0 = 0,
-  Value1 = 1,
-  Value2 = 2,
-  Value3 = 3,
-  Value4 = 4,
-  Value5 = 5,
 }
 
 export interface UserWithAppMetadata {
@@ -1036,15 +1024,14 @@ export class HttpClient<SecurityDataType = unknown> {
 
   protected toQueryString(rawQuery?: QueryParamsType): string {
     const query = rawQuery || {};
-    const keys = Object.keys(query).filter((key) =>
-      "undefined" !== typeof query[key]
+    const keys = Object.keys(query).filter(
+      (key) => "undefined" !== typeof query[key],
     );
     return keys
-      .map((
-        key,
-      ) => (Array.isArray(query[key])
-        ? this.addArrayQueryParam(query, key)
-        : this.addQueryParam(query, key))
+      .map((key) =>
+        Array.isArray(query[key])
+          ? this.addArrayQueryParam(query, key)
+          : this.addQueryParam(query, key)
       )
       .join("&");
   }
@@ -1059,11 +1046,10 @@ export class HttpClient<SecurityDataType = unknown> {
       input !== null && (typeof input === "object" || typeof input === "string")
         ? JSON.stringify(input)
         : input,
-    [ContentType.Text]: (
-      input: any,
-    ) => (input !== null && typeof input !== "string"
-      ? JSON.stringify(input)
-      : input),
+    [ContentType.Text]: (input: any) =>
+      input !== null && typeof input !== "string"
+        ? JSON.stringify(input)
+        : input,
     [ContentType.FormData]: (input: any) =>
       Object.keys(input || {}).reduce((formData, key) => {
         const property = input[key];
@@ -1195,8 +1181,9 @@ export class HttpClient<SecurityDataType = unknown> {
  * @title G4 API
  * @version v1
  */
-export class Api<SecurityDataType extends unknown>
-  extends HttpClient<SecurityDataType> {
+export class Api<
+  SecurityDataType extends unknown,
+> extends HttpClient<SecurityDataType> {
   admins = {
     /**
      * @description Returns the list of all admin user records.
@@ -1441,36 +1428,11 @@ export class Api<SecurityDataType extends unknown>
      *
      * @tags Collections
      * @name CollectionContentsCreate
-     * @summary Get TOC tree for collection (deprecated: Use /collection-contents/{collection}
-     * @request POST:/collection-contents
+     * @summary Get TOC tree for collection
+     * @request POST:/collection-contents/{collection}
      * @secure
      */
     collectionContentsCreate: (
-      data: CollectionContentsRequest,
-      params: RequestParams = {},
-    ) =>
-      this.request<CollectionContentsResponse, ProblemDetails>({
-        path: `/collection-contents`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Collections
-     * @name CollectionContentsCreate2
-     * @summary Get TOC tree for collection
-     * @request POST:/collection-contents/{collection}
-     * @originalName collectionContentsCreate
-     * @duplicate
-     * @secure
-     */
-    collectionContentsCreate2: (
       collection: string,
       data: CollectionContentsRequest2,
       params: RequestParams = {},
@@ -1491,36 +1453,11 @@ export class Api<SecurityDataType extends unknown>
      *
      * @tags Collections
      * @name CollectionContentsDocumentsCreate
-     * @summary Get TOC node documents for collection (deprecated: Use /collection-contents-documents/{collection}
-     * @request POST:/collection-contents-documents
+     * @summary Get TOC node documents for collection
+     * @request POST:/collection-contents-documents/{collection}
      * @secure
      */
     collectionContentsDocumentsCreate: (
-      data: CollectionContentsDocumentsRequest,
-      params: RequestParams = {},
-    ) =>
-      this.request<CollectionContentsDocumentsResponse, ProblemDetails>({
-        path: `/collection-contents-documents`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Collections
-     * @name CollectionContentsDocumentsCreate2
-     * @summary Get TOC node documents for collection
-     * @request POST:/collection-contents-documents/{collection}
-     * @originalName collectionContentsDocumentsCreate
-     * @duplicate
-     * @secure
-     */
-    collectionContentsDocumentsCreate2: (
       collection: string,
       data: CollectionContentsDocumentsRequest2,
       params: RequestParams = {},
