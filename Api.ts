@@ -79,6 +79,7 @@ export interface AuthenticatedSessionResponse {
   claims: string[] | null;
   roles: string[] | null;
   profiles: string[] | null;
+  collections: string[] | null;
   /** @minLength 1 */
   version: string;
 }
@@ -896,6 +897,7 @@ export interface UserAuthenticationResponse {
   claims: string[] | null;
   roles: string[] | null;
   profiles: string[] | null;
+  collections: string[] | null;
   /** @minLength 1 */
   version: string;
 }
