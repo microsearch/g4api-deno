@@ -5,6 +5,13 @@ import { AppMetadata, G4ResultPromise } from "./types.ts";
 export * from "./Api.ts";
 export * from "./types.ts";
 
+export const USER_STATUS_PENDING = 0,
+  USER_STATUS_ACTIVE = 1,
+  USER_STATUS_INACTIVE = 2,
+  USER_STATUS_RESET = 3,
+  USER_STATUS_VALIDATING = 4,
+  USER_STATUS_ANONYMOUS = 5;
+
 export class G4Api extends G4ApiImpl {
   constructor(endpoint: string, tenant: string, appName?: string) {
     super(endpoint, tenant, appName);
