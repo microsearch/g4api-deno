@@ -7,6 +7,7 @@ import {
   SearchRequest,
   SearchResponse,
 } from "./types.ts";
+import { G4ApiError } from "./mod.ts";
 
 export class G4ApiImpl {
   protected constructor(stage: string, tenant: string, appName?: string) {
@@ -70,10 +71,7 @@ export class G4ApiImpl {
       if (bearer != null) this.bearerToken = bearer;
       return await mapG4Response(response);
     } catch (error: unknown) {
-      return Err({
-        source: "network",
-        message: error instanceof Error ? error.message : "unknown error",
-      });
+      return Err(networkError(error));
     }
   }
 
@@ -99,10 +97,7 @@ export class G4ApiImpl {
       if (bearer != null) this.bearerToken = bearer;
       return await mapG4Response(response);
     } catch (error: unknown) {
-      return Err({
-        source: "network",
-        message: error instanceof Error ? error.message : "unknown error",
-      });
+      return Err(networkError(error));
     }
   }
 
@@ -154,10 +149,7 @@ export class G4ApiImpl {
       if (bearer != null) this.bearerToken = bearer;
       return await mapG4Response(response);
     } catch (error: unknown) {
-      return Err({
-        source: "network",
-        message: error instanceof Error ? error.message : "unknown error",
-      });
+      return Err(networkError(error));
     }
   }
 
@@ -186,10 +178,7 @@ export class G4ApiImpl {
       if (bearer != null) this.bearerToken = bearer;
       return await mapG4Response(response);
     } catch (error: unknown) {
-      return Err({
-        source: "network",
-        message: error instanceof Error ? error.message : "unknown error",
-      });
+      return Err(networkError(error));
     }
   }
 
@@ -202,55 +191,83 @@ export class G4ApiImpl {
   private session: string | null = null;
 }
 
+function networkError(error: unknown): G4ApiError {
+  return error instanceof Error
+    ? {
+      status: 0,
+      source: "network",
+      message: error.message,
+      details: { name: error.name },
+    }
+    : {
+      status: 0,
+      source: "network",
+      message: "unknown error",
+      details: {},
+    };
+}
+
 async function mapG4Response<RespT>(
   response: Response,
 ): G4ResultPromise<RespT> {
   switch (response.status) {
     case 200:
-      try {
-        return Ok(await response.json());
-      } catch (err: unknown) {
-        return Ok({} as RespT);
-      }
-    case 204:
-      return Err({
+      return Ok(await response.json());
+    case 204: {
+      const error: G4ApiError = {
         status: response.status,
         source: "g4",
         message: response.statusText,
-      });
+        details: {},
+      };
+      return Err(error);
+    }
     case 400: {
       const g4error = response.headers.get("x-g4-error");
-      return Err({
-        status: response.status,
-        message: response.statusText,
-        ...(g4error === null
-          ? {
-            source: "http",
-            details: { text: await response.text() },
-          }
-          : {
-            source: "g4",
-            details: await response.json(),
-          }),
-      });
+      if (g4error) {
+        const error: G4ApiError = {
+          status: response.status,
+          source: "g4",
+          message: response.statusText,
+          details: await response.json(),
+        };
+        return Err(error);
+      } else {
+        const error: G4ApiError = {
+          status: response.status,
+          source: "http",
+          message: response.statusText,
+          details: await response.json(),
+        };
+        return Err(error);
+      }
     }
-    case 401:
-      return Err({
+    case 401: {
+      const error: G4ApiError = {
         status: response.status,
         source: "auth",
         message: "unauthorized request",
-      });
-    case 409:
-      return Err({
+        details: {},
+      };
+      return Err(error);
+    }
+    case 409: {
+      const error: G4ApiError = {
         status: response.status,
         source: "g4",
         message: response.statusText,
-      });
-    default:
-      return Err({
+        details: {},
+      };
+      return Err(error);
+    }
+    default: {
+      const error: G4ApiError = {
         status: response.status,
         source: "http",
         message: response.statusText,
-      });
+        details: await response.json(),
+      };
+      return Err(error);
+    }
   }
 }
