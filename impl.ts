@@ -228,7 +228,7 @@ async function mapG4Response<RespT>(
         const error: G4ApiError = {
           status: response.status,
           source: "g4",
-          message: response.statusText,
+          message: g4error,
           details: await response.json(),
         };
         return Err(error);
