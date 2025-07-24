@@ -212,7 +212,11 @@ async function mapG4Response<RespT>(
 ): G4ResultPromise<RespT> {
   switch (response.status) {
     case 200:
-      return Ok(await response.json());
+      try {
+        return Ok(await response.json());
+      } catch (err: unknown) {
+        return Ok({} as RespT);
+      }
     case 204: {
       const error: G4ApiError = {
         status: response.status,
@@ -265,7 +269,7 @@ async function mapG4Response<RespT>(
         status: response.status,
         source: "http",
         message: response.statusText,
-        details: await response.json(),
+        details: { body: await response.text() },
       };
       return Err(error);
     }
