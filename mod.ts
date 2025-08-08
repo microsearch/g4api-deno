@@ -332,21 +332,20 @@ export class G4Api extends G4ApiImpl {
     await this.put(metadataPath("user", id, app), metadata);
 
   getTenantMetadata = async (
-    id: number,
     app?: string,
   ): G4ResultPromise<AppMetadata> =>
-    await this.get(metadataPath("tenant", id, app));
+    await this.get(metadataPath("tenant", null, app));
 
   setTenantMetadata = async (
-    id: number,
     metadata: AppMetadata,
     app?: string,
   ): G4ResultPromise<void> =>
-    await this.put(metadataPath("tenant", id, app), metadata);
+    await this.put(metadataPath("tenant", null, app), metadata);
 }
 
-function metadataPath(name: string, id: number, app?: string) {
-  let path = `/${name}-metadata/${id}`;
+function metadataPath(name: string, id: number | null, app?: string) {
+  let path = `/${name}-metadata`;
+  if (id !== null) path += `/${id}`;
   if (app) path += `?app=${encodeURIComponent(app)}`;
   return path;
 }
