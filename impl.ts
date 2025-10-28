@@ -6,6 +6,8 @@ import {
   ManifestResponse,
   SearchRequest,
   SearchResponse,
+  SnippetsRequest,
+  SnippetsResponse,
 } from "./types.ts";
 import { G4ApiError } from "./mod.ts";
 
@@ -123,7 +125,14 @@ export class G4ApiImpl {
 
   async search(request: SearchRequest): G4ResultPromise<SearchResponse> {
     return await this.searchPost<SearchRequest, SearchResponse>(
-      `/search`,
+      "/search",
+      request,
+    );
+  }
+
+  async snippets(request: SnippetsRequest): G4ResultPromise<SnippetsResponse> {
+    return await this.searchPost<SnippetsRequest, SnippetsResponse>(
+      "/snippets",
       request,
     );
   }

@@ -11,6 +11,8 @@ export type G4ResultPromise<T> = Promise<Result<T, G4ApiError>>;
 
 export type AppMetadata = Record<string, unknown>;
 
+// search
+
 export type SearchRequest = {
   collections: string[];
   query: string;
@@ -43,6 +45,42 @@ export type SearchResponseResult = {
   title: string;
   collection: string;
   snippet: string;
+  archived: boolean;
+};
+
+// snippets
+
+export type SnippetsRequest = {
+  collections: string[];
+  signatures: string[];
+  query: string;
+  start: number;
+  count: number;
+  max_words?: number;
+  hilite?: boolean;
+};
+
+export type SnippetsResult = {
+  type: typeof SUCCESS;
+  query: string;
+  total_results: number;
+  results: SnippetsResponseResult[];
+};
+
+export type SnippetsError = {
+  type: typeof ERROR;
+  message: string;
+};
+
+export type SnippetsResponse = SnippetsResult | SnippetsError;
+
+export type SnippetsResponseResult = {
+  index: number;
+  score: number;
+  signature: string;
+  title: string;
+  collection: string;
+  snippets: string[];
   archived: boolean;
 };
 
