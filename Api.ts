@@ -156,8 +156,7 @@ export interface CollectionNode {
 export interface ContentsField {
   /** @minLength 1 */
   name: string;
-  /** @minLength 1 */
-  value: string;
+  value?: string | null;
 }
 
 export interface CreateAdminRequest {
@@ -1271,7 +1270,7 @@ export class Api<
      *
      * @tags Authentication
      * @name PasswordList
-     * @summary Get a tenant's password policy
+     * @summary Get a tenant's password policy (DEPRECATED)
      * @request GET:/policy/password
      * @secure
      */
@@ -1421,6 +1420,29 @@ export class Api<
         path: `/collection/${id}`,
         method: "DELETE",
         secure: true,
+        ...params,
+      }),
+  };
+  collectionDocument = {
+    /**
+     * No description
+     *
+     * @tags Collections
+     * @name CollectionDocumentDetail
+     * @summary Retrieve collection document record
+     * @request GET:/collection-document/{collection}/{signature}
+     * @secure
+     */
+    collectionDocumentDetail: (
+      collection: string,
+      signature: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<CollectionDocument, ProblemDetails>({
+        path: `/collection-document/${collection}/${signature}`,
+        method: "GET",
+        secure: true,
+        format: "json",
         ...params,
       }),
   };
@@ -1875,24 +1897,6 @@ export class Api<
         method: "GET",
         secure: true,
         format: "json",
-        ...params,
-      }),
-  };
-  notify = {
-    /**
-     * No description
-     *
-     * @tags Notifications
-     * @name NotifyCreate
-     * @summary Handle SNS subscription messages
-     * @request POST:/notify
-     * @secure
-     */
-    notifyCreate: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/notify`,
-        method: "POST",
-        secure: true,
         ...params,
       }),
   };
@@ -2551,6 +2555,25 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  username = {
+    /**
+     * No description
+     *
+     * @tags Users
+     * @name UsernameDetail
+     * @summary Get user by username
+     * @request GET:/username/{username}
+     * @secure
+     */
+    usernameDetail: (username: string, params: RequestParams = {}) =>
+      this.request<GetUserResponse, ProblemDetails>({
+        path: `/username/${username}`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),

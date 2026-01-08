@@ -1,6 +1,6 @@
-import { UserStatus } from "./Api.ts";
 import { G4Api } from "./mod.ts";
-import { assert } from "assert";
+// import * as assert from "assert";
+import { assert } from "jsr:@std/assert";
 
 const appName = "deno-test";
 const tenant = "afscme";
@@ -94,7 +94,7 @@ Deno.test("change password", async () => {
       return response.id;
     },
     err: (error) => {
-      assert(false);
+      assert(false, error.message);
       return 0;
     },
   });
@@ -107,7 +107,7 @@ Deno.test("change password", async () => {
   })).match({
     ok: () => {},
     err: (error) => {
-      assert(false);
+      assert(false, error.message);
       console.error(error);
     },
   });
@@ -115,7 +115,7 @@ Deno.test("change password", async () => {
   (await g4api.archiveUser(user_id)).match({
     ok: () => {},
     err: (error) => {
-      assert(false);
+      assert(false, error.message);
       console.error(error);
     },
   });

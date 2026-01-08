@@ -91,6 +91,12 @@ export class G4Api extends G4ApiImpl {
   ): G4ResultPromise<api.UpdateCollectionResponse> =>
     await this.post("/collection", request);
 
+  getCollectionDocument = async (
+    collection: string,
+    signature: string,
+  ): G4ResultPromise<api.CollectionDocument> =>
+    await this.get(`/collection-document/${collection}/${signature}`);
+
   getCollectionContents = async (
     collection: string,
     request: api.CollectionContentsRequest2,
