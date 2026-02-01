@@ -229,6 +229,14 @@ export interface CreateSessionRequest {
   detail?: Record<string, any>;
 }
 
+export interface CreateSubmissionRequest {
+  /** @minLength 1 */
+  collectionName: string;
+  signature?: string | null;
+  docMetadata: Record<string, string>;
+  notes?: string | null;
+}
+
 export interface CreateTenantRequest {
   /** @minLength 1 */
   name: string;
@@ -469,6 +477,26 @@ export interface GetSessionResponse {
   /** @format int32 */
   userId: number;
   data: any;
+}
+
+export interface GetSubmissionsResponse {
+  /** @format int32 */
+  id: number;
+  /** @format date-time */
+  created: string;
+  /** @minLength 1 */
+  signature: string | null;
+  /** @format int32 */
+  submitUserId: number;
+  docMetadata: Record<string, string>;
+  /** @minLength 1 */
+  notes: string | null;
+  /** @minLength 1 */
+  username: string;
+  /** @minLength 1 */
+  fullname: string;
+  /** @minLength 1 */
+  email: string;
 }
 
 export interface GetTenantResponse {
@@ -2313,6 +2341,48 @@ export class Api<
     staticSessionDetail: (id: string, params: RequestParams = {}) =>
       this.request<GetSessionResponse, ProblemDetails>({
         path: `/static-session/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  submissions = {
+    /**
+     * @description Create a submission entry for a new or updated document
+     *
+     * @tags Submissions
+     * @name SubmissionsCreate
+     * @summary Create document submission
+     * @request POST:/submissions
+     * @secure
+     */
+    submissionsCreate: (
+      data: CreateSubmissionRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<number, ProblemDetails>({
+        path: `/submissions`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Submissions
+     * @name SubmissionsDetail
+     * @summary Retrieve document submissions
+     * @request GET:/submissions/{collection}
+     * @secure
+     */
+    submissionsDetail: (collection: string, params: RequestParams = {}) =>
+      this.request<GetSubmissionsResponse[], ProblemDetails>({
+        path: `/submissions/${collection}`,
         method: "GET",
         secure: true,
         format: "json",

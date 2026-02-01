@@ -347,6 +347,16 @@ export class G4Api extends G4ApiImpl {
     app?: string,
   ): G4ResultPromise<void> =>
     await this.put(metadataPath("tenant", null, app), metadata);
+
+  /*
+    submissions API
+  */
+  createSubmission = async (
+    request: api.CreateSubmissionRequest,
+  ): G4ResultPromise<void> => await this.post("/submissions", request);
+
+  getSubmissions = async (collection: string): G4ResultPromise<void> =>
+    await this.get(`/submissions/${collection}`);
 }
 
 function metadataPath(name: string, id: number | null, app?: string) {
