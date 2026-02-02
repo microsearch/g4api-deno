@@ -277,7 +277,7 @@ export class G4Api extends G4ApiImpl {
   /*
     tenants API
   */
-  getTenantsList = async (): G4ResultPromise<api.GetTenantResponse> =>
+  getTenantsList = async (): G4ResultPromise<api.GetTenantsResponse> =>
     await this.get("/tenants");
 
   purgeArchivedTenants = async (days: number): G4ResultPromise<void> =>
