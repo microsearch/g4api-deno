@@ -12,7 +12,11 @@ import {
 import { G4ApiError } from "./mod.ts";
 
 export class G4ApiImpl {
-  protected constructor(stage: string, tenant: string, appName?: string) {
+  protected constructor(
+    stage: string,
+    tenant: string | null,
+    appName?: string,
+  ) {
     this.endpoint = `https://g4-${stage}.v1.mrcapi.net`;
     this.search_endpoint = `https://g4-search-${stage}.v1.mrcapi.net`;
     this.tenant = tenant;
@@ -54,7 +58,8 @@ export class G4ApiImpl {
     request?: ReqT,
   ): G4ResultPromise<RespT> {
     try {
-      const headers: Record<string, string> = { "x-g4-tenant": this.tenant };
+      const headers: Record<string, string> = {};
+      if (this.tenant !== null) headers["x-g4-tenant"] = this.tenant;
       if (this.appName) headers["x-g4-application"] = this.appName;
       if (request) headers["Content-Type"] = "application/json";
       if (this.apikey !== null) {
@@ -83,9 +88,9 @@ export class G4ApiImpl {
   ): G4ResultPromise<RespT> {
     try {
       const headers: Record<string, string> = {
-        "x-g4-tenant": this.tenant,
         "Content-type": "application/json",
       };
+      if (this.tenant !== null) headers["x-g4-tenant"] = this.tenant;
       if (this.appName) headers["x-g4-application"] = this.appName;
       if (this.sessionId !== null || this.bearer !== null) {
         headers["Authorization"] = `Bearer ${this.sessionId ?? this.bearer}`;
@@ -140,9 +145,9 @@ export class G4ApiImpl {
   async manifest(): G4ResultPromise<ManifestResponse> {
     try {
       const headers: Record<string, string> = {
-        "x-g4-tenant": this.tenant,
         "Content-type": "application/json",
       };
+      if (this.tenant !== null) headers["x-g4-tenant"] = this.tenant;
       if (this.appName) headers["x-g4-application"] = this.appName;
       if (this.sessionId !== null || this.bearer !== null) {
         headers["Authorization"] = `Bearer ${this.sessionId ?? this.bearer}`;
@@ -168,9 +173,9 @@ export class G4ApiImpl {
   ): G4ResultPromise<FieldIndexDesc> {
     try {
       const headers: Record<string, string> = {
-        "x-g4-tenant": this.tenant,
         "Content-type": "application/json",
       };
+      if (this.tenant !== null) headers["x-g4-tenant"] = this.tenant;
       if (this.appName) headers["x-g4-application"] = this.appName;
       if (this.sessionId !== null || this.bearer !== null) {
         headers["Authorization"] = `Bearer ${this.sessionId ?? this.bearer}`;
@@ -193,7 +198,7 @@ export class G4ApiImpl {
 
   private endpoint: string;
   private search_endpoint: string;
-  private tenant: string;
+  private tenant: string | null;
   private appName?: string;
   private bearer: string | null = null;
   private apikey: string | null = null;
@@ -223,7 +228,7 @@ async function mapG4Response<RespT>(
     case 200:
       try {
         return Ok(await response.json());
-      } catch (err: unknown) {
+      } catch (_err: unknown) {
         return Ok({} as RespT);
       }
     case 204: {

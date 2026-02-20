@@ -13,7 +13,7 @@ export const USER_STATUS_PENDING = 0,
   USER_STATUS_ANONYMOUS = 5;
 
 export class G4Api extends G4ApiImpl {
-  constructor(endpoint: string, tenant: string, appName?: string) {
+  constructor(endpoint: string, tenant: string | null, appName?: string) {
     super(endpoint, tenant, appName);
   }
 

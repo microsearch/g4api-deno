@@ -1,6 +1,5 @@
 import { G4Api } from "./mod.ts";
-// import * as assert from "assert";
-import { assert } from "jsr:@std/assert";
+import { assert, assertEquals } from "jsr:@std/assert";
 
 const appName = "deno-test";
 const tenant = "afscme";
@@ -12,26 +11,43 @@ const credentials = {
   password: Deno.args[1] ?? "password",
 };
 
-// not really a test; it just dumps its results
-Deno.test("dump collection list", async () => {
+Deno.test("sessionless authentication", async () => {
+  const g4api = new G4Api("dev", null, appName);
+  const response = await g4api.authenticateUser(credentials);
+  response.match({
+    ok: (auth) => {
+      assert(auth.validCredentials);
+      assert(auth.bearer !== null);
+    },
+    err: (err) => {
+      console.log({ err, details: err.details });
+      assert(false);
+    },
+  });
+});
+
+Deno.test("get collection list", async () => {
   const g4api = new G4Api("dev", tenant, appName);
   const response = await g4api.connect(credentials);
   response.match({
     ok: (auth) => {
-      console.log({ auth });
+      assert(auth.validCredentials);
+      assert(auth.bearer !== null);
+      assert(auth.sessionId !== null);
     },
     err: (err) => {
       console.log({ err, details: err.details });
+      assert(false);
     },
   });
   if (g4api.connected) {
     const collections = (await g4api.getCollectionList()).unwrap().collections;
-    console.log({ collections });
+    assert(collections.length > 0);
     await g4api.disconnect();
   }
 });
 
-Deno.test("dump search results", async () => {
+Deno.test("get search results", async () => {
   const g4api = new G4Api("dev", tenant, appName);
   await g4api.connect(credentials);
   if (g4api.connected) {
@@ -44,10 +60,19 @@ Deno.test("dump search results", async () => {
       })
     ).match({
       ok: (response) => {
-        console.log({ response });
+        assert(response.type === "success");
+        if (response.type === "success") {
+          assertEquals(
+            response.query,
+            'g4_collection: IN [/contracts] AND "severance pay"',
+          );
+          assert(response.total_results > 0);
+          assert(response.results.length > 0);
+        }
       },
       err: (err) => {
         console.log({ err, details: err.details });
+        assert(false);
       },
     });
     await g4api.disconnect();
