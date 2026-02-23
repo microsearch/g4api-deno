@@ -479,6 +479,15 @@ export interface GetSessionResponse {
   data: any;
 }
 
+export interface GetSubmissionStatsResponse {
+  /** @format int32 */
+  id: number;
+  /** @minLength 1 */
+  name: string;
+  /** @format int32 */
+  count: number;
+}
+
 export interface GetSubmissionsResponse {
   /** @format int32 */
   id: number;
@@ -2367,6 +2376,24 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Get submission stats for tenant(s)
+     *
+     * @tags Submissions
+     * @name SubmissionsList
+     * @summary Get submission stats
+     * @request GET:/submissions
+     * @secure
+     */
+    submissionsList: (params: RequestParams = {}) =>
+      this.request<GetSubmissionStatsResponse[], ProblemDetails>({
+        path: `/submissions`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
