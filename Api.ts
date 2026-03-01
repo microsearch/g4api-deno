@@ -232,9 +232,7 @@ export interface CreateSessionRequest {
 export interface CreateSubmissionRequest {
   /** @minLength 1 */
   collectionName: string;
-  signature?: string | null;
   docMetadata: Record<string, string>;
-  notes?: string | null;
 }
 
 export interface CreateTenantRequest {
@@ -493,13 +491,10 @@ export interface GetSubmissionsResponse {
   id: number;
   /** @format date-time */
   created: string;
-  /** @minLength 1 */
-  signature: string | null;
   /** @format int32 */
   submitUserId: number;
   docMetadata: Record<string, string>;
-  /** @minLength 1 */
-  notes: string | null;
+  accepted: boolean | null;
   /** @minLength 1 */
   username: string;
   /** @minLength 1 */
@@ -2413,6 +2408,29 @@ export class Api<
         method: "GET",
         secure: true,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Submissions
+     * @name SubmissionsUpdate
+     * @summary Update document submission
+     * @request PUT:/submissions/{id}
+     * @secure
+     */
+    submissionsUpdate: (
+      id: number,
+      data: Record<string, string>,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, ProblemDetails>({
+        path: `/submissions/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
   };

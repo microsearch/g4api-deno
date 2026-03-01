@@ -363,6 +363,22 @@ export class G4Api extends G4ApiImpl {
   getSubmissionStats = async (): G4ResultPromise<
     api.GetSubmissionStatsResponse[]
   > => await this.get("/submissions");
+
+  updateSubmission = async (
+    id: number,
+    docMetadata: Record<string, string>,
+    accepted?: boolean,
+  ) => {
+    return await this.put(
+      `/submissions/${id}`,
+      docMetadata,
+      accepted
+        ? {
+          "x-g4-accepted": accepted.toString(),
+        }
+        : undefined,
+    );
+  };
 }
 
 function metadataPath(name: string, id: number | null, app?: string) {
