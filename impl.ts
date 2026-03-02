@@ -36,6 +36,10 @@ export class G4ApiImpl {
     console.log("search endpoint:", this.search_endpoint);
   }
 
+  /*
+    top-level http requests
+  */
+
   protected get = async <RespT>(path: string): G4ResultPromise<RespT> =>
     await this.http("GET", path);
 
@@ -52,6 +56,9 @@ export class G4ApiImpl {
   protected delete = async (path: string): G4ResultPromise<void> =>
     await this.http("DELETE", path);
 
+  /*
+    generic http request
+  */
   protected async http<ReqT, RespT>(
     method: string,
     path: string,
