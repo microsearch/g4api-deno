@@ -860,6 +860,11 @@ export interface UpdateRoleRequest {
   claims?: string[] | null;
 }
 
+export interface UpdateSubmissionRequest {
+  accepted: boolean;
+  docMetadata: Record<string, string>;
+}
+
 export interface UpdateUserRequest {
   status?: UserStatus;
   username?: string | null;
@@ -2422,7 +2427,7 @@ export class Api<
      */
     submissionsUpdate: (
       id: number,
-      data: Record<string, string>,
+      data: UpdateSubmissionRequest,
       params: RequestParams = {},
     ) =>
       this.request<void, ProblemDetails>({
