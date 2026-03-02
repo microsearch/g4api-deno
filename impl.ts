@@ -42,14 +42,12 @@ export class G4ApiImpl {
   protected put = async <ReqT, RespT>(
     path: string,
     request: ReqT,
-    headers?: Record<string, string>,
-  ): G4ResultPromise<RespT> => await this.http("PUT", path, request, headers);
+  ): G4ResultPromise<RespT> => await this.http("PUT", path, request);
 
   protected post = async <ReqT, RespT>(
     path: string,
     request?: ReqT,
-    headers?: Record<string, string>,
-  ): G4ResultPromise<RespT> => await this.http("POST", path, request, headers);
+  ): G4ResultPromise<RespT> => await this.http("POST", path, request);
 
   protected delete = async (path: string): G4ResultPromise<void> =>
     await this.http("DELETE", path);
@@ -58,10 +56,9 @@ export class G4ApiImpl {
     method: string,
     path: string,
     request?: ReqT,
-    add_headers?: Record<string, string>,
   ): G4ResultPromise<RespT> {
     try {
-      const headers: Record<string, string> = add_headers ?? {};
+      const headers: Record<string, string> = {};
       if (this.tenant !== null) headers["x-g4-tenant"] = this.tenant;
       if (this.appName) headers["x-g4-application"] = this.appName;
       if (request) headers["Content-Type"] = "application/json";
